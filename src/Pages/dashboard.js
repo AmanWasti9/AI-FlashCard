@@ -159,7 +159,6 @@
 //     </div>
 //   );
 // }
-
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -208,62 +207,6 @@ const CustomButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const Flashcard = styled("div")(({ theme }) => ({
-  border: "1px solid #ccc",
-  borderRadius: "8px",
-  padding: "16px",
-  margin: "8px 0",
-  cursor: "pointer",
-  backgroundColor: "#f9f9f9",
-  transition: "transform 0.3s ease",
-  "&:hover": {
-    transform: "rotateY(180deg)",
-  },
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  perspective: "1000px",
-  position: "relative",
-  width: "100%",
-  height: "150px",
-}));
-
-const FlashcardInner = styled("div")({
-  position: "absolute",
-  width: "100%",
-  height: "100%",
-  textAlign: "center",
-  transition: "transform 0.6s",
-  transformStyle: "preserve-3d",
-});
-
-const FlashcardFront = styled("div")({
-  position: "absolute",
-  width: "100%",
-  height: "100%",
-  backfaceVisibility: "hidden",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: "#fff",
-  borderRadius: "8px",
-  padding: "8px",
-});
-
-const FlashcardBack = styled("div")({
-  position: "absolute",
-  width: "100%",
-  height: "100%",
-  backfaceVisibility: "hidden",
-  transform: "rotateY(180deg)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: "#f0f0f0",
-  borderRadius: "8px",
-  padding: "8px",
-});
-
 export default function Dashboard() {
   const [inputValue, setInputValue] = useState("");
   const [flashcards, setFlashcards] = useState([]);
@@ -292,15 +235,34 @@ export default function Dashboard() {
   };
 
   return (
-    <div>
-      <Container
-        style={{
+    <div
+      style={{
+        height: "1200px", // Set the container height to 100% of the viewport
+        overflowY: "auto", // Allow vertical scrolling
+        overflowX: "hidden", // Prevent horizontal scrolling
+        paddingRight: "8px", // Add padding to avoid scrollbar overlap
+      }}
+    >
+      <Box
+        sx={{
           display: "flex",
+          flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
+          width: "90vw",
+          mt: 4,
+          mb: 4,
         }}
       >
-        <div className="w-60per">
+        <div
+          style={{
+            borderRadius: "12px",
+            color: "white",
+            border: "2px solid purple",
+            padding: "16px",
+            width: "100%",
+          }}
+        >
           <h1>Welcome Line</h1>
           <h3>Generate New Cards</h3>
           <TextField
@@ -317,10 +279,34 @@ export default function Dashboard() {
                   </CustomButton>
                 </InputAdornment>
               ),
+              style: { color: "white" }, // Input text color
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white", // Default border color
+                },
+                "&:hover fieldset": {
+                  borderColor: "white", // Border color on hover
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "white", // Border color when focused
+                },
+                color: "white", // Text color
+              },
+              "& .MuiInputLabel-root": {
+                color: "white", // Label color
+              },
+              "& .MuiInputLabel-root.Mui-focused": {
+                color: "white", // Label color when focused
+              },
+            }}
+            InputLabelProps={{
+              style: { color: "white" }, // Label color
             }}
           />
+          <br />
           <h3>Generated Flashcards:</h3>
-
           <Grid container spacing={2}>
             {flashcards.map((flashcard, index) => (
               <Grid item key={index} xs={12} sm={6} md={4}>
@@ -333,13 +319,13 @@ export default function Dashboard() {
                     <CardContent>
                       <Box
                         sx={{
-                          perspective: "1000px",
+                          perspective: "2000px",
                           "& > div": {
                             transition: "transform 0.6s",
                             transformStyle: "preserve-3d",
                             position: "relative",
                             width: "100%",
-                            height: "200px",
+                            height: "20vh",
                             boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
                             transform: flipped[index]
                               ? "rotateY(180deg)"
@@ -382,22 +368,8 @@ export default function Dashboard() {
               </Grid>
             ))}
           </Grid>
-
-          <h3>Works on:</h3>
-          <ul
-            style={{
-              listStyle: "none",
-            }}
-          >
-            <li>Lecture Slides</li>
-            <li>PDFs</li>
-            <li>Word Documents</li>
-            <li>PowerPoint</li>
-            <li>Google Docs And Slides</li>
-            <li>Youtube Videos</li>
-          </ul>
         </div>
-      </Container>
+      </Box>
     </div>
   );
 }

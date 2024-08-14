@@ -320,6 +320,8 @@ export default function SignUp() {
           height: "100%",
           flexWrap: "wrap",
           zIndex: "2",
+          overflowY: "auto", // Enable vertical scrolling
+          padding: 2,
           "& > :not(style)": {
             width: {
               xs: "80vw",
