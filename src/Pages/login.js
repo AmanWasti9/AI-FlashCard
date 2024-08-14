@@ -240,7 +240,7 @@ export default function Login() {
                   width: "100%",
                 }}
               />
-              <Button href="/signup" sx={{ color: "purple" }}>
+              <Button href="/sign-up" sx={{ color: "purple" }}>
                 Don&apos;t have an account? Sign Up
               </Button>
 
