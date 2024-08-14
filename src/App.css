@@ -1,0 +1,23 @@
+.w-60per {
+  width: 60%;
+}
+.f-c {
+  display: flex;
+  flex-direction: column;
+}
+.f-r {
+  display: flex;
+  flex-direction: row;
+}
+.j-c {
+  justify-content: center;
+}
+.a-i {
+  align-items: center;
+}
+
+@media (max-width: 599px) {
+  .w-60per {
+    width: 90%;
+  }
+}
