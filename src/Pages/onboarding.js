@@ -1,9 +1,10 @@
-import { motion, useAnimation } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
-import React, { useEffect } from 'react';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
-import { Github, SecondaryButton, DangerButton } from '../components/buttons';
+import { motion, useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+import React, { useEffect } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import { Github, SecondaryButton, DangerButton } from "../components/buttons";
+import { Box } from "@mui/material";
 
 export default function Onboarding() {
   const controls = useAnimation();
@@ -23,7 +24,21 @@ export default function Onboarding() {
   }, [controls, inView]);
 
   return (
-    <div style={{ height: '150vh', paddingTop: '50vh' }}>
+    // <div style={{ height: "150vh", paddingTop: "50vh" }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        zIndex: "2",
+      }}
+    >
       <motion.div
         ref={ref}
         className="w"
@@ -32,7 +47,15 @@ export default function Onboarding() {
       >
         Welcome
       </motion.div>
-      <Github />
-    </div>
+      <motion.div
+        ref={ref}
+        className="w"
+        initial={{ opacity: 0, y: 50 }}
+        animate={controls}
+      >
+        <Github />
+      </motion.div>
+    </Box>
+    // </div>
   );
 }

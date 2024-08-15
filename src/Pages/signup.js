@@ -233,6 +233,7 @@ import {
   Typography,
 } from "@mui/material";
 import GIcon from "../Images/GoogleIcon.png";
+import { Link } from "react-router-dom";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
@@ -528,7 +529,7 @@ export default function SignUp() {
               />
               <Typography variant="body2">
                 Already Registered?{" "}
-                <Button href="/login" sx={{ color: "purple" }}>
+                <Button component={Link} to="/login" sx={{ color: "purple" }}>
                   Log In
                 </Button>
               </Typography>

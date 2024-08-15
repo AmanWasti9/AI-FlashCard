@@ -6,7 +6,6 @@ import Onboarding from "./Pages/onboarding";
 import SignUp from "./Pages/signup";
 import { Route, Routes } from "react-router-dom";
 
-
 function App() {
   return (
     <div>

@@ -19,6 +19,7 @@ import Paper from "@mui/material/Paper";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import LinearProgress from "@mui/material/LinearProgress";
 import GIcon from "../Images/GoogleIcon.png";
+import { Link } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -240,7 +241,7 @@ export default function Login() {
                   width: "100%",
                 }}
               />
-              <Button href="/sign-up" sx={{ color: "purple" }}>
+              <Button component={Link} to="/sign-up" sx={{ color: "purple" }}>
                 Don&apos;t have an account? Sign Up
               </Button>
 
