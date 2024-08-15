@@ -540,7 +540,6 @@ export default function Dashboard() {
         <Navigation />
       </div>
 
-<<<<<<< HEAD
       {/* Routes for the components */}
       <Box
         sx={{
@@ -556,7 +555,6 @@ export default function Dashboard() {
           <Route path="flashcard" element={<Flashcard />} />
         </Routes>
       </Box>
-=======
             <TextField
               type="text"
               fullWidth
@@ -809,7 +807,6 @@ export default function Dashboard() {
           }}
         />
       </Grid>
->>>>>>> 6b30687540aa3492a50857df0e86c02c65394637
     </Box>
   );
 }
