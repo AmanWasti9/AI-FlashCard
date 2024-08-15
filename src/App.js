@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-import "./App.css";
-import Background from "./components/dashboard"; // Assuming this is your background component
-import Dashboard from "./Pages/dashboard";
-import Login from "./Pages/login";
-import Onboarding from "./Pages/onboarding";
-import SignUp from "./Pages/signup";
-import { Route, Routes, useLocation } from "react-router-dom";
-
-function App() {
-  // Get the current route
-=======
 import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -21,7 +9,6 @@ import Onboarding from './Pages/onboarding';
 import SignUp from './Pages/signup';
 
 function App() {
->>>>>>> 6b30687540aa3492a50857df0e86c02c65394637
   const location = useLocation();
 
   return (
@@ -41,7 +28,6 @@ function App() {
       {/* Main Content */}
       <div
         style={{
-<<<<<<< HEAD
           position: "fixed",
           zIndex: "2",
           width: "100%",
@@ -57,7 +43,6 @@ function App() {
           {/* Render Dashboard with Navigation and Content */}
           <Route path="/dashboard/*" element={<Dashboard />} />
         </Routes>
-=======
           position: 'fixed',
           zIndex: '2',
         }}
@@ -99,7 +84,6 @@ function App() {
             } />
           </Routes>
         </AnimatePresence>
->>>>>>> 6b30687540aa3492a50857df0e86c02c65394637
       </div>
     </div>
   );
