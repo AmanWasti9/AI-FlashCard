@@ -43,14 +43,7 @@ function App() {
               </motion.div>
             } />
             <Route path="/" element={
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-              >
                 <Onboarding />
-              </motion.div>
             } />
             <Route path="/login" element={
               <motion.div
