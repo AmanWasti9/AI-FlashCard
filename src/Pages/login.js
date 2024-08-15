@@ -129,9 +129,12 @@ export default function Login() {
       >
         <div
           style={{
-            borderRadius: "12px",
+            borderRadius: "50px",
             color: "white",
             border: "2px solid purple",
+            backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background color
+            backdropFilter: "blur(10px)", // Apply the blur effect // Set the card background to black
+            
           }}
         >
           {loading && <LinearProgress />} {/* Show loader when loading */}
