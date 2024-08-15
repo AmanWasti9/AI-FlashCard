@@ -306,7 +306,9 @@ export default function Dashboard() {
                     <Grid item key={index} xs={12} sm={6} md={4}>
                       <Card 
                       sx={{
-                      backgroundColor: "#7a49a5", // Set the card background to black
+                      borderRadius:"15px",
+                      backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background color
+                      backdropFilter: "blur(10px)", // Apply the blur effect // Set the card background to black
                       color: "white", // Set the text color to white
                     }}>
                         <CardActionArea
@@ -322,6 +324,8 @@ export default function Dashboard() {
                                   transition: "transform 0.6s",
                                   transformStyle: "preserve-3d",
                                   position: "relative",
+                                  borderRadius:"15px",
+                                  backgroundColor:"#7a49a5",
                                   width: "100%",
                                   height: "20vh",
                                   boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
