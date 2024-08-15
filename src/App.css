@@ -142,3 +142,25 @@ body {
 .btn:where(:hover, :focus) {
   color: #fff;
 }
+
+@keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+.fluid-gradient {
+  display: flex;
+  background-image: linear-gradient(70deg, blue, black, indigo, violet, purple, blue);
+  background-size: 300% 200%;
+  animation: gradientAnimation 30s ease infinite;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  -webkit-animation: gradientAnimation 30s ease infinite;
+}

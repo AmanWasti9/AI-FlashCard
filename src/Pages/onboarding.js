@@ -30,21 +30,7 @@ export default function Onboarding() {
 
   return (
     // <div style={{ height: "150vh", paddingTop: "50vh" }}>
-    <Box
-      sx={{
-        display: "flex",
-        backgroundColor: "black",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        zIndex: "2",
-      }}
-    >
+    <Box className="fluid-gradient">
       <motion.div
         ref={ref}
         className="w"
