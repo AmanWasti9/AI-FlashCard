@@ -89,9 +89,9 @@ export default function Dashboard() {
 
       <div>
         <Routes>
-          <Route path="/dashboard" element={<GenerateCard />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/flashcards" element={<Flashcards />} />
+          <Route path="/" element={<GenerateCard />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="flashcards" element={<Flashcards />} />
         </Routes>
       </div>
     </Box>
