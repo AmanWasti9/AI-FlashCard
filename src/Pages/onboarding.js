@@ -27,8 +27,8 @@ export default function Onboarding() {
     // <div style={{ height: "150vh", paddingTop: "50vh" }}>
     <Box
       sx={{
-        backgroundColor:'black',
         display: "flex",
+        backgroundColor:"black",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
