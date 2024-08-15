@@ -3,7 +3,12 @@ import { useInView } from "react-intersection-observer";
 import React, { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { Github, SecondaryButton, DangerButton } from "../components/buttons";
+import {
+  Github,
+  SecondaryButton,
+  DangerButton,
+  DemoBtn,
+} from "../components/buttons";
 import { Box } from "@mui/material";
 
 export default function Onboarding() {
@@ -28,6 +33,7 @@ export default function Onboarding() {
     <Box
       sx={{
         display: "flex",
+        backgroundColor: "black",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
@@ -54,6 +60,14 @@ export default function Onboarding() {
         animate={controls}
       >
         <Github />
+      </motion.div>
+      <motion.div
+        ref={ref}
+        className="w"
+        initial={{ opacity: 0, y: 50 }}
+        animate={controls}
+      >
+        <DemoBtn />
       </motion.div>
     </Box>
     // </div>

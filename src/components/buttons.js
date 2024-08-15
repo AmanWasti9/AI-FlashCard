@@ -9,13 +9,22 @@ import { Link } from "react-router-dom";
 const Github = () => (
   <Link to="/sign-up" className="td-n">
     <button className="btn" type="button">
-      Button
+      Get Started
     </button>
   </Link>
 );
+
+const DemoBtn = () => (
+  <Link to="/dashboard" className="td-n">
+    <button className="btn" type="button">
+      Demo
+    </button>
+  </Link>
+);
+
 const SecondaryButton = () => (
   <button className="btn btn-secondary">Secondary</button>
 );
 const DangerButton = () => <button className="btn btn-danger">Danger</button>;
 
-export { Github, SecondaryButton, DangerButton };
+export { Github, SecondaryButton, DangerButton, DemoBtn };

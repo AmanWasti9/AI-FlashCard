@@ -7,6 +7,8 @@
     "@babel/plugin-transform-private-property-in-object": "^7.24.7",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
+    "@ionic/core": "^8.2.7",
+    "@ionic/react": "^8.2.7",
     "@langchain/core": "^0.2.23",
     "@langchain/google-genai": "^0.0.25",
     "@mui/icons-material": "^5.16.7",
