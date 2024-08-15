@@ -67,7 +67,7 @@ export default function Dashboard() {
     <Box
       sx={{
         flexGrow: 1,
-        width: "100vw",
+        width: "100%",
         overflowY: "auto",
         minHeight: "100vh",
         background:
