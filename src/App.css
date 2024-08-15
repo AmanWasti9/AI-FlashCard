@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Matemasie&family=Open+Sans:wght@300&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Matemasie&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Open+Sans:wght@300&display=swap");
 * {
   margin: 0;
   padding: 0;
@@ -38,6 +40,20 @@ body {
 .w {
   font-size: 50px;
   color: white;
+  margin-bottom: 10px;
+  text-transform: capitalize;
+  font-family: "Matemasie", sans-serif;
+}
+
+.w1 {
+  font-size: 50px;
+  font-family: "Matemasie", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-weight: bold;
+  background: linear-gradient(-45deg, #ffae00, #7e03aa, #00fffb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* From Uiverse.io by kleenpulse */
@@ -57,6 +73,8 @@ body {
   position: relative; /* Removed fixed */
   flex-wrap: wrap;
   z-index: 2;
+  font-family: "Matemasie", sans-serif;
+
   /* place-content: center; */
   padding: 0.5em 1.5em;
   font-size: 17px;
@@ -144,15 +162,19 @@ body {
 }
 
 @keyframes gradientAnimation {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
 }
 
 .fluid-gradient {
   display: flex;
-  background-image: linear-gradient(70deg, blue, black, indigo, violet, purple, blue);
-  background-size: 300% 200%;
-  animation: gradientAnimation 30s ease infinite;
+  /* background-image: linear-gradient(70deg, blue, black, indigo, violet, purple, blue); */
+  /* background-size: 300% 200%; */
+  /* animation: gradientAnimation 30s ease infinite; */
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -162,5 +184,5 @@ body {
   width: 100%;
   height: 100%;
   z-index: 2;
-  -webkit-animation: gradientAnimation 30s ease infinite;
+  /* -webkit-animation: gradientAnimation 30s ease infinite; */
 }
