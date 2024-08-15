@@ -33,11 +33,7 @@ export default function Onboarding() {
     <Box
       sx={{
         display: "flex",
-<<<<<<< HEAD
         backgroundColor: "black",
-=======
-        backgroundColor:"black",
->>>>>>> 6b30687540aa3492a50857df0e86c02c65394637
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
