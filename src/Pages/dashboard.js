@@ -304,7 +304,11 @@ export default function Dashboard() {
                 >
                   {flashcards.map((flashcard, index) => (
                     <Grid item key={index} xs={12} sm={6} md={4}>
-                      <Card>
+                      <Card 
+                      sx={{
+                      backgroundColor: "#7a49a5", // Set the card background to black
+                      color: "white", // Set the text color to white
+                    }}>
                         <CardActionArea
                           onClick={() => {
                             handleCardClick(index);
