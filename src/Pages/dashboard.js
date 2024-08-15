@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -32,6 +31,7 @@ import Navigation from "../components/navigation";
 import GenerateCard from "./generateCard";
 import Profile from "./profile";
 import Flashcards from "./flashcards";
+import Flashcard from "./flashcard";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -92,6 +92,7 @@ export default function Dashboard() {
           <Route path="/" element={<GenerateCard />} />
           <Route path="profile" element={<Profile />} />
           <Route path="flashcards" element={<Flashcards />} />
+          <Route path="dashboard/flashcard" element={<Flashcard />} />
         </Routes>
       </div>
     </Box>
