@@ -43,9 +43,7 @@ function App() {
           {/* Render Dashboard with Navigation and Content */}
           <Route path="/dashboard/*" element={<Dashboard />} />
         </Routes>
-          position: 'fixed',
-          zIndex: '2',
-        }}
+          
       >
         <AnimatePresence>
           <Routes location={location} key={location.pathname}>
