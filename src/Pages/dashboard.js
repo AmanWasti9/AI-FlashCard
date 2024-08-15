@@ -134,10 +134,6 @@ export default function Dashboard() {
     setSnackbarOpen(true);
   };
 
-  if (!user) {
-    return navigate("/login");
-  }
-
   return (
     <Box
       sx={{
