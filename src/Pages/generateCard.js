@@ -8,10 +8,8 @@ import {
   InputAdornment,
   Grid,
   Card,
-  CardActionArea,
   CardContent,
   Box,
-  Paper,
   Typography,
   Dialog,
   DialogTitle,
@@ -19,6 +17,9 @@ import {
   DialogContentText,
   DialogActions,
   Snackbar,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import "../App.css";
@@ -27,8 +28,6 @@ import { collection, doc, getDoc, writeBatch } from "firebase/firestore";
 import { firestore } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
-import Navigation from "../components/navigation";
-
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -62,7 +61,8 @@ export default function GenerateCard() {
   const [inputValue, setInputValue] = useState("");
   const [flashcards, setFlashcards] = useState([]);
   const [flipped, setFlipped] = useState([]);
-  const [name, setName] = useState([]);
+  const [boxShadowColor, setBoxShadowColor] = useState([]);
+  const [name, setName] = useState("");
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const auth = getAuth();
@@ -70,6 +70,28 @@ export default function GenerateCard() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const handleSnackbarClose = () => setSnackbarOpen(false);
+  const [selectedOptions, setSelectedOptions] = useState({});
+  const handleOptionChange = (index, value) => {
+    setSelectedOptions((prev) => ({
+      ...prev,
+      [index]: value,
+    }));
+
+    // Check if the selected option is correct
+    const isCorrect = value === flashcards[index].answer;
+    setBoxShadowColor((prev) => ({
+      ...prev,
+      [index]: isCorrect ? "0 0 3px 5px #66FF00" : "0 0 3px 5px red",
+    }));
+
+    // Flip the card only if the selected option is incorrect
+    if (!isCorrect) {
+      setFlipped((prev) => ({
+        ...prev,
+        [index]: true,
+      }));
+    }
+  };
 
   const handleOpen = () => {
     setOpen(true);
@@ -93,12 +115,6 @@ export default function GenerateCard() {
     }
   };
 
-  const handleCardClick = (id) => {
-    setFlipped((pre) => ({
-      ...pre,
-      [id]: !pre[id],
-    }));
-  };
   const saveFlashcards = async () => {
     if (!name) {
       alert("please enter a name");
@@ -112,7 +128,7 @@ export default function GenerateCard() {
     if (docSnap.exists()) {
       const collections = docSnap.data().flashcards || [];
       if (collections.find((f) => f.name === name)) {
-        alert("Flahcards collection with the same name already exists");
+        alert("Flashcards collection with the same name already exists");
         return;
       } else {
         collections.push({ name });
@@ -130,7 +146,6 @@ export default function GenerateCard() {
 
     await batch.commit();
     handleClose();
-    // navigate("/flashcards");
     setSnackbarMessage("Your Cards are Saved.");
     setSnackbarOpen(true);
   };
@@ -138,7 +153,7 @@ export default function GenerateCard() {
   return (
     <div>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={12}>
           <div
             style={{
               padding: "20px",
@@ -154,85 +169,8 @@ export default function GenerateCard() {
             >
               Generate New Cards
             </h3>
-            <Button
-              component="label"
-              role={undefined}
-              variant="contained"
-              tabIndex={-1}
-              disabled={!user}
-              startIcon={
-                <CloudUploadIcon
-                  style={{
-                    fontSize: "1.5rem",
-                  }}
-                />
-              }
-              fullWidth
-              style={{
-                height: "20vh",
-                fontSize: "1.5rem",
-                backgroundColor: "purple",
-              }}
-            >
-              Upload file
-              <VisuallyHiddenInput type="file" />
-            </Button>
+
             <br />
-            <h3
-              style={{
-                textAlign: "center",
-                color: "white",
-              }}
-            >
-              OR
-            </h3>
-            <TextField
-              type="text"
-              fullWidth
-              label="Youtube Vedio Link"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <CustomButton onClick={handleSendClick}>
-                      <SendIcon style={{ color: "purple" }} />
-                    </CustomButton>
-                  </InputAdornment>
-                ),
-                style: { color: "white" }, // Input text color
-              }}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: "white", // Default border color
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "white", // Border color on hover
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "white", // Border color when focused
-                  },
-                  color: "white", // Text color
-                },
-                "& .MuiInputLabel-root": {
-                  color: "white", // Label color
-                },
-                "& .MuiInputLabel-root.Mui-focused": {
-                  color: "white", // Label color when focused
-                },
-              }}
-              InputLabelProps={{
-                style: { color: "white" }, // Label color
-              }}
-            />
-            <br />
-            <h3
-              style={{
-                textAlign: "center",
-                color: "white",
-              }}
-            >
-              OR
-            </h3>
 
             <TextField
               type="text"
@@ -248,26 +186,26 @@ export default function GenerateCard() {
                     </CustomButton>
                   </InputAdornment>
                 ),
-                style: { color: "white" }, // Input text color
+                style: { color: "white" },
               }}
               sx={{
                 "& .MuiOutlinedInput-root": {
                   "& fieldset": {
-                    borderColor: "white", // Default border color
+                    borderColor: "white",
                   },
                   "&:hover fieldset": {
-                    borderColor: "white", // Border color on hover
+                    borderColor: "white",
                   },
                   "&.Mui-focused fieldset": {
-                    borderColor: "white", // Border color when focused
+                    borderColor: "white",
                   },
-                  color: "white", // Text color
+                  color: "white",
                 },
                 "& .MuiInputLabel-root": {
-                  color: "white", // Label color
+                  color: "white",
                 },
                 "& .MuiInputLabel-root.Mui-focused": {
-                  color: "white", // Label color when focused
+                  color: "white",
                 },
               }}
               InputLabelProps={{
@@ -276,7 +214,7 @@ export default function GenerateCard() {
             />
           </div>
         </Grid>
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={12}>
           <div
             style={{
               padding: "20px",
@@ -295,72 +233,122 @@ export default function GenerateCard() {
                   mt: 4,
                 }}
               >
-                <Grid
-                  container
-                  spacing={2}
-                  // sx={{ overflowY: "auto", maxHeight: "80vh" }}
-                >
+                <Grid container spacing={2}>
                   {flashcards.map((flashcard, index) => (
-                    <Grid item key={index} xs={12} sm={6} md={4}>
+                    <Grid item xs={12} sm={6} md={4} key={index}>
                       <Card
                         sx={{
-                          backgroundColor: "#7a49a5", // Set the card background to black
-                          color: "white", // Set the text color to white
+                          height: "420px",
+                          boxShadow: boxShadowColor[index],
+                          cursor: "pointer",
+                          perspective: "1000px",
+                          borderRadius: "10px",
                         }}
                       >
-                        <CardActionArea
-                          onClick={() => {
-                            handleCardClick(index);
+                        <Box
+                          sx={{
+                            width: "100%",
+                            height: "100%",
+                            transform: flipped[index]
+                              ? "rotateY(180deg)"
+                              : "rotateY(0deg)",
+                            transformStyle: "preserve-3d",
+                            transition: "transform 0.6s",
+                            position: "relative",
+                            borderRadius: "8px",
                           }}
                         >
-                          <CardContent>
-                            <Box
+                          {/* Front Side of the Card */}
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              width: "100%",
+                              height: "100%",
+                              backfaceVisibility: "hidden",
+                              display: "flex",
+                              flexDirection: "column",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              background:
+                                "linear-gradient(130deg, purple, violet, #F98CB9 )",
+                              color: "white",
+                              boxSizing: "border-box",
+                              borderRadius: "8px",
+                              padding: "15px",
+                            }}
+                          >
+                            <Typography
+                              textAlign="center"
                               sx={{
-                                perspective: "2000px",
-                                "& > div": {
-                                  transition: "transform 0.6s",
-                                  transformStyle: "preserve-3d",
-                                  position: "relative",
-                                  width: "100%",
-                                  height: "20vh",
-                                  boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
-                                  transform: flipped[index]
-                                    ? "rotateY(180deg)"
-                                    : "rotateY(0deg)",
-                                },
-                                "& > div > div": {
-                                  position: "absolute",
-                                  width: "100%",
-                                  height: "100%",
-                                  backfaceVisibility: "hidden",
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  alignItems: "center",
-                                  padding: 2,
-                                  boxSizing: "border-box",
-                                },
-                                "& > div > div:nth-of-type(2)": {
-                                  transform: "rotateY(180deg)",
-                                },
+                                fontSize: "clamp(12px , 15px, 17px)",
+                                fontWeight: "bold",
                               }}
                             >
-                              <div>
-                                {/* The front side */}
-                                <div>
-                                  <Typography variant="h5" component="div">
-                                    {flashcard.question}
-                                  </Typography>
-                                </div>
-                                {/* The back side */}
-                                <div>
-                                  <Typography variant="h5" component="div">
-                                    {flashcard.answer}
-                                  </Typography>
-                                </div>
-                              </div>
-                            </Box>
-                          </CardContent>
-                        </CardActionArea>
+                              {flashcard.question}
+                            </Typography>
+                            {/* Display options below the question */}
+                            {flashcard.options && (
+                              <RadioGroup
+                                sx={{ marginTop: 2, width: "100%" }}
+                                value={selectedOptions[index] || ""}
+                                onChange={(e) =>
+                                  handleOptionChange(index, e.target.value)
+                                }
+                              >
+                                {Object.entries(flashcard.options).map(
+                                  ([key, value], optionIndex) => (
+                                    <FormControlLabel
+                                      key={optionIndex}
+                                      value={`${key}) ${value}`} // Match the value to the format of the answer
+                                      control={
+                                        <Radio
+                                          sx={{
+                                            color: "white",
+                                          }}
+                                        />
+                                      }
+                                      label={`${key}) ${value}`} // Display in the format "a) Paris"
+                                      sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        textAlign: "start",
+                                        color: "white",
+                                        marginBottom: "5px",
+                                      }}
+                                    />
+                                  )
+                                )}
+                              </RadioGroup>
+                            )}
+                          </Box>
+
+                          {/* Back Side of the Card */}
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              width: "100%",
+                              height: "100%",
+                              backfaceVisibility: "hidden",
+                              transform: "rotateY(180deg)",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              background:
+                                "linear-gradient(130deg, #F98CB9, violet,purple  )",
+                              color: "white",
+                              padding: 2,
+                              boxSizing: "border-box",
+                            }}
+                          >
+                            <Typography
+                              variant="h6"
+                              component="div"
+                              textAlign="center"
+                            >
+                              {flashcard.answer}
+                            </Typography>
+                          </Box>
+                        </Box>
                       </Card>
                     </Grid>
                   ))}
@@ -389,98 +377,38 @@ export default function GenerateCard() {
                 </Box>
               </Box>
             )}
-            <Dialog onClose={handleClose} open={open}>
-              <div
-                style={{
-                  backgroundColor: "black",
-                  color: "white",
-                }}
-              >
-                <DialogTitle>Save Flashcard</DialogTitle>
-                <DialogContent>
-                  <DialogContentText>
-                    Please Enter a name for your flashcards collections
-                  </DialogContentText>
-                  <TextField
-                    autoFocus
-                    margin="dense"
-                    label="Collection Name"
-                    type="text"
-                    fullWidth
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    variant="outlined"
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: "white", // Default border color
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "white", // Border color on hover
-                        },
-                        "&.Mui-focused fieldset": {
-                          borderColor: "white", // Border color when focused
-                        },
-                        color: "white", // Text color
-                      },
-                      "& .MuiInputLabel-root": {
-                        color: "white", // Label color
-                      },
-                      "& .MuiInputLabel-root.Mui-focused": {
-                        color: "white", // Label color when focused
-                      },
-                    }}
-                    InputLabelProps={{
-                      style: { color: "white" }, // Label color
-                    }}
-                  />
-                </DialogContent>
-                <DialogActions>
-                  <Button
-                    onClick={handleClose}
-                    sx={{
-                      background: "transparent",
-                      border: "1px solid",
-                      borderColor: "purple",
-                      color: "white",
-                      "&:hover": {
-                        backgroundColor: "transparent",
-                        color: "purple",
-                        borderColor: "white",
-                      },
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={saveFlashcards}
-                    sx={{
-                      background: "purple",
-                      color: "white",
-                      border: "1px solid",
-                      borderColor: "purple",
-                      "&:hover": {
-                        backgroundColor: "transparent",
-                      },
-                    }}
-                  >
-                    Save
-                  </Button>
-                </DialogActions>
-              </div>
+
+            {/* Save Flashcards Dialog */}
+            <Dialog open={open} onClose={handleClose}>
+              <DialogTitle>Save Flashcards</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Please enter a name for your flashcard collection:
+                </DialogContentText>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  label="Collection Name"
+                  type="text"
+                  fullWidth
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={saveFlashcards}>Save</Button>
+              </DialogActions>
             </Dialog>
           </div>
         </Grid>
+
+        {/* Snackbar Notification */}
         <Snackbar
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          autoHideDuration={6000} // Adjust the duration as needed
           open={snackbarOpen}
+          autoHideDuration={6000}
           onClose={handleSnackbarClose}
           message={snackbarMessage}
-          sx={{
-            backgroundColor: "purple",
-            color: "white",
-          }}
         />
       </Grid>
     </div>
