@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Matemasie&family=Open+Sans:wght@300&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Matemasie&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Open+Sans:wght@300&display=swap");
 * {
   margin: 0;
   padding: 0;
@@ -40,20 +38,6 @@ body {
 .w {
   font-size: 50px;
   color: white;
-  margin-bottom: 10px;
-  text-transform: capitalize;
-  font-family: "Matemasie", sans-serif;
-}
-
-.w1 {
-  font-size: 50px;
-  font-family: "Matemasie", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  font-weight: bold;
-  background: linear-gradient(-45deg, #ffae00, #7e03aa, #00fffb);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 /* From Uiverse.io by kleenpulse */
@@ -73,8 +57,6 @@ body {
   position: relative; /* Removed fixed */
   flex-wrap: wrap;
   z-index: 2;
-  font-family: "Matemasie", sans-serif;
-
   /* place-content: center; */
   padding: 0.5em 1.5em;
   font-size: 17px;
@@ -172,9 +154,17 @@ body {
 
 .fluid-gradient {
   display: flex;
-  /* background-image: linear-gradient(70deg, blue, black, indigo, violet, purple, blue); */
-  /* background-size: 300% 200%; */
-  /* animation: gradientAnimation 30s ease infinite; */
+  background-image: linear-gradient(
+    70deg,
+    blue,
+    black,
+    indigo,
+    violet,
+    purple,
+    blue
+  );
+  background-size: 300% 200%;
+  animation: gradientAnimation 30s ease infinite;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -184,62 +174,173 @@ body {
   width: 100%;
   height: 100%;
   z-index: 2;
-  /* -webkit-animation: gradientAnimation 30s ease infinite; */
+  -webkit-animation: gradientAnimation 30s ease infinite;
 }
 
-/* Dashboard.css */
-.dashboard-container {
+.button-container {
   display: flex;
   justify-content: center;
+  gap: 20px; /* Adjust this value to increase or decrease space between buttons */
+  padding: 20px;
+}
+
+.openai-logo svg {
+  width: 30px; /* Adjust the size as needed */
+  height: 30px; /* Adjust the size as needed */
+}
+
+.brutalist-button {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  height: 100vh;
-  /* background: linear-gradient(70deg, lightblue, violet, #c9a9a6); */
-  background-size: 200% 200%;
-  animation: backgroundAnimation 10s ease infinite;
-}
-
-.card {
-  padding: 30px;
-  border-radius: 15px;
-  background-color: rgba(255, 255, 255, 0.8);
-  opacity: 0.5;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  text-align: center;
-  width: 300px;
-}
-
-.card-title {
-  margin: 0 0 20px 0;
-  font-size: 28px;
-  color: #333;
-}
-
-.signup-count {
-  font-size: 60px;
+  justify-content: center;
+  border: 3px solid #000000;
+  border-radius: 12px;
+  padding: 0;
+  text-decoration: none;
+  color: #000000;
   font-weight: bold;
-  color: #4a90e2;
-  animation: riseUp 2s ease-out;
+  position: relative;
+  box-shadow: 4px 4px 0px #000000;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  height: 70px;
+  width: 70px;
+  cursor: pointer;
 }
 
-@keyframes riseUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+.brutalist-button.openai {
+  background: linear-gradient(70deg, #ffd1dc, #ffdfba, #ffffd1);
 }
 
-@keyframes backgroundAnimation {
+.brutalist-button::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -150%;
+  width: 300%;
+  height: 300%;
+  border-radius: 50%;
+  transform: translateX(-50%) scale(0);
+  transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+  z-index: 1;
+}
+
+.brutalist-button.openai::before {
+  background: linear-gradient(90deg, pink, violet, lightblue);
+}
+
+.brutalist-button:hover::before {
+  transform: translateX(-50%) scale(1);
+}
+
+.brutalist-button:hover {
+  transform: translate(-4px, -4px);
+  box-shadow: 8px 8px 0px #000000;
+}
+
+.brutalist-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #000000;
+}
+
+.openai-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.openai-logo {
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(70deg, lightblue, violet, #c9a9a6);
+  /* OpenAI's green color */
+  border-radius: 50%; /* This creates the circular background */
+}
+
+.openai-icon {
+  width: 54px;
+  height: 54px;
+  fill: #ffffff; /* White color for the SVG */
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes spin {
   0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
+    transform: translate(-50%, -50%) rotate(0deg);
   }
   100% {
-    background-position: 0% 50%;
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.brutalist-button:hover .openai-logo {
+  animation: spin 5s linear infinite;
+  width: 50px;
+  height: 50px;
+  top: 28%;
+}
+
+.brutalist-button:hover .openai-icon {
+  transform: scale(0.6);
+}
+
+.button-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.3;
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  text-align: center;
+  opacity: 0;
+  transform: translateY(20px);
+  z-index: 2;
+  position: absolute;
+  bottom: 18px;
+  left: 0;
+  right: 0;
+}
+
+.button-text span:first-child {
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.button-text span:last-child {
+  font-size: 16px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #ffffff;
+}
+
+.brutalist-button:hover .button-text {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.brutalist-button.openai:hover .button-text {
+  color: #d3d3d3;
+}
+
+.brutalist-button.openai:hover .button-text span:last-child {
+  color: #d6cbbf;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .brutalist-button:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 8px 8px 0px #000000;
   }
 }

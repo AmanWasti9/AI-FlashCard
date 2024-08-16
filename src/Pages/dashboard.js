@@ -1,100 +1,50 @@
-import React, { useState } from "react";
-import { styled } from "@mui/material/styles";
-import Button from "@mui/material/Button";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import {
-  Container,
-  TextField,
-  InputAdornment,
-  Grid,
-  Card,
-  CardActionArea,
-  CardContent,
-  Box,
-  Paper,
-  Typography,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Snackbar,
-} from "@mui/material";
-import SendIcon from "@mui/icons-material/Send";
-import "../App.css";
-import { PromptService } from "../Services/PromptService";
-import { collection, doc, getDoc, writeBatch } from "firebase/firestore";
-import { firestore } from "../firebase";
-import { Route, Routes, useNavigate } from "react-router-dom";
-import { getAuth } from "firebase/auth";
+import React from "react";
+import { Box, Container } from "@mui/material";
+import { Routes, Route } from "react-router-dom";
 import Navigation from "../components/navigation";
 import GenerateCard from "./generateCard";
 import Profile from "./profile";
 import Flashcards from "./flashcards";
 import Flashcard from "./flashcard";
-
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  whiteSpace: "nowrap",
-  width: 1,
-});
-
-const CustomButton = styled(Button)(({ theme }) => ({
-  backgroundColor: "white",
-  borderRadius: "50%",
-  padding: "0.5rem",
-  minWidth: "unset",
-  boxShadow: "none",
-  "&:hover": {
-    backgroundColor: "white",
-  },
-  "&:focus": {
-    outline: "none",
-  },
-  "&:active": {
-    backgroundColor: "white",
-  },
-}));
+import Cards from "../components/Cards";
 
 export default function Dashboard() {
   return (
     <Box
       sx={{
-        flexGrow: 1,
-        width: "100%",
-        overflowY: "auto",
+        display: "flex",
+        flexDirection: "column",
         minHeight: "100vh",
         background:
           "linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0))",
         backdropFilter: "blur(10px)",
-        WebkitBackdropFilter: "blur(10px)", // Corrected -webkit-backdrop-filter
-        boxShadow: "0 8px 32px 0 rgba(0,0,0,0.37)", // Corrected box-shadow syntax
+        WebkitBackdropFilter: "blur(10px)",
+        boxShadow: "0 8px 32px 0 rgba(0,0,0,0.37)",
       }}
     >
-      <div
-        style={{
-          margin: "50px",
+      <Box
+        sx={{
+          padding: "50px",
           display: "flex",
           justifyContent: "center",
         }}
       >
         <Navigation />
-      </div>
-
-      <div>
+      </Box>
+      <Box
+        sx={{
+          flexGrow: 1,
+          padding: 2,
+        }}
+      >
         <Routes>
           <Route path="/" element={<GenerateCard />} />
           <Route path="profile" element={<Profile />} />
           <Route path="flashcards" element={<Flashcards />} />
-          <Route path="dashboard/flashcard" element={<Flashcard />} />
+          <Route path="flashcard/:id" element={<Flashcard />} />
+          <Route path="game" element={<Cards />} />
         </Routes>
-      </div>
+      </Box>
     </Box>
   );
 }

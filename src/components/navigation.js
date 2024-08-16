@@ -1,69 +1,76 @@
-import React, { useState } from "react";
+import React from "react";
 import "./navigation.css";
-import { IonIcon } from "@ionic/react";
-import {
-  homeOutline,
-  personOutline,
-  bookmarkOutline,
-  imagesOutline,
-  settingsOutline,
-} from "ionicons/icons";
 import { Link } from "react-router-dom";
 
-const Navigation = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  const handleActiveLink = (index) => {
-    setActiveIndex(index);
-  };
-
+export default function Navigation() {
   return (
-    <div className="navigation">
-      <ul>
-        <li
-          className={`list ${activeIndex === 0 ? "active" : ""}`}
-          onClick={() => handleActiveLink(0)}
-        >
-          <Link to="/dashboard">
-            <span className="icon">
-              <IonIcon icon={homeOutline} />
-            </span>
-            <span className="text">Home</span>
-            <span className="circle"></span>
+    <div>
+      <ul className="example-1">
+        <li className="icon-content">
+          <Link
+            to="/dashboard/"
+            aria-label="Spotify"
+            data-social="spotify"
+            className="link"
+          >
+            <ion-icon
+              name="home-outline"
+              style={{
+                fontSize: "24px",
+              }}
+            ></ion-icon>
           </Link>
+          <div className="tooltip">Home</div>
         </li>
-        <li
-          className={`list ${activeIndex === 1 ? "active" : ""}`}
-          onClick={() => handleActiveLink(1)}
-        >
-          <Link to="/dashboard/flashcards">
-            <span className="icon">
-              <IonIcon icon={bookmarkOutline} />
-            </span>
-            <span className="text">Saved</span>
-            <span className="circle"></span>
+        <li className="icon-content">
+          <Link
+            to="/dashboard/game"
+            aria-label="Pinterest"
+            data-social="pinterest"
+            className="link"
+          >
+            <ion-icon
+              name="game-controller-outline"
+              style={{
+                fontSize: "24px",
+              }}
+            ></ion-icon>
           </Link>
+          <div className="tooltip">Game</div>
         </li>
-        <li
-          className={`list ${activeIndex === 2 ? "active" : ""}`}
-          onClick={() => handleActiveLink(2)}
-        >
-          <Link to="/dashboard/profile">
-            <span className="icon">
-              <IonIcon icon={personOutline} />
-            </span>
-            <span className="text">Profile</span>
-            <span className="circle"></span>
+        <li className="icon-content">
+          <Link
+            to="/dashboard/flashcards"
+            aria-label="Dribbble"
+            data-social="dribbble"
+            className="link"
+          >
+            <ion-icon
+              name="bookmark-outline"
+              style={{
+                fontSize: "24px",
+              }}
+            ></ion-icon>
           </Link>
+          <div className="tooltip">Saved</div>
         </li>
-
-        <div
-          className="indicator"
-          style={{ transform: `translateX(calc(120px * ${activeIndex}))` }}
-        ></div>
+        <li className="icon-content">
+          <Link
+            to="/dashboard/profile"
+            aria-label="Telegram"
+            data-social="telegram"
+            className="link"
+          >
+            <ion-icon
+              name="person-outline"
+              style={{
+                fontSize: "24px",
+              }}
+            ></ion-icon>
+          </Link>
+          <div className="tooltip">Profile</div>
+        </li>
       </ul>
     </div>
   );
-};
-
-export default Navigation;
+}
