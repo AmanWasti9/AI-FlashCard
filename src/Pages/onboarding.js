@@ -1,9 +1,17 @@
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import React, { useState } from "react";
-import { Box, TextField, Snackbar, Alert } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  TextField,
+  Snackbar,
+  Alert,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { firestore } from "../firebase"; // Ensure you import and initialize Firebase correctly
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, doc, getDocs, collection } from "firebase/firestore";
+import CircleProgress from "../components/circleprogress";
 
 export default function Onboarding() {
   const [email, setEmail] = useState("");
@@ -11,7 +19,38 @@ export default function Onboarding() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const controls = useAnimation();
+  const [totalSignups, setTotalSignups] = useState(0);
+  const [displayCount, setDisplayCount] = useState(0);
 
+  const fetchTotalSignups = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(firestore, "waitlist"));
+      const total = querySnapshot.size;
+      setTotalSignups(total);
+    } catch (error) {
+      console.error("Error fetching total signups: ", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTotalSignups();
+  }, []);
+
+  useEffect(() => {
+    let start = 0;
+    const end = totalSignups;
+    if (start === end) return;
+
+    const incrementTime = Math.abs(Math.floor(2000 / (end - start)));
+
+    const timer = setInterval(() => {
+      start += 1;
+      setDisplayCount(start);
+      if (start === end) clearInterval(timer);
+    }, incrementTime);
+
+    return () => clearInterval(timer);
+  }, [totalSignups]);
   const handleJoin = async (e) => {
     e.preventDefault();
     try {
@@ -28,7 +67,7 @@ export default function Onboarding() {
         setSnackbarOpen(false);
       }, 3000);
     } catch (error) {
-      console.log(error.message);
+      // console.log(error.message);
       setSnackbarMessage("Registration failed. Please try again.");
       setSnackbarOpen(true);
     }
@@ -132,6 +171,37 @@ export default function Onboarding() {
         <button className="btn" type="submit">
           Join
         </button>
+      </motion.div>
+      <br />
+      <motion.div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            lineHeight: "10px",
+            position: "relative",
+          }}
+        >
+          <Typography fontSize={"40px"}>
+            <CircleProgress value={displayCount} max={100} />
+            {/* Set max as needed */}
+          </Typography>
+          <Typography
+            fontSize={"20px"}
+            sx={{
+              color: "white",
+
+              fontFamily: "'Matemasie', sans-serif",
+              textAlign: "center",
+            }}
+          >
+            🥳 Users have Joined Us!
+            <br />
+            🚀 Hurry Up
+          </Typography>
+        </div>
       </motion.div>
       <Snackbar
         open={snackbarOpen}

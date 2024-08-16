@@ -186,3 +186,60 @@ body {
   z-index: 2;
   /* -webkit-animation: gradientAnimation 30s ease infinite; */
 }
+
+/* Dashboard.css */
+.dashboard-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  /* background: linear-gradient(70deg, lightblue, violet, #c9a9a6); */
+  background-size: 200% 200%;
+  animation: backgroundAnimation 10s ease infinite;
+}
+
+.card {
+  padding: 30px;
+  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 0.8);
+  opacity: 0.5;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 300px;
+}
+
+.card-title {
+  margin: 0 0 20px 0;
+  font-size: 28px;
+  color: #333;
+}
+
+.signup-count {
+  font-size: 60px;
+  font-weight: bold;
+  color: #4a90e2;
+  animation: riseUp 2s ease-out;
+}
+
+@keyframes riseUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes backgroundAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
