@@ -1,4 +1,3 @@
-"use client";
 import React, { useEffect, useState } from "react";
 // import CountUp from "react-countup";
 
@@ -47,7 +46,7 @@ const CircleProgress = ({ value, max, size = 160 }) => {
         strokeDashoffset={offset}
         fill="none"
         style={{ transition: "stroke-dashoffset 0.35s" }}
-        transform={`rotate(-90 ${size / 2} ${size / 2})`} // Rotate the circle so the progress starts from the top
+        transform={`rotate(-90 ${size / 2} ${size / 2})`}
       />
       <text
         x="50%"
@@ -57,7 +56,6 @@ const CircleProgress = ({ value, max, size = 160 }) => {
         fontSize="40px"
         fill="white"
       >
-        {/* <CountUp start={0} end={value} duration={2.5} /> */}
         {value}
       </text>
     </svg>
