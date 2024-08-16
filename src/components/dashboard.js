@@ -195,32 +195,53 @@ export default function Background() {
       //----------------------------------------------------------------- MOUSE function
       var raycaster = new THREE.Raycaster();
       var mouse = new THREE.Vector2(),
-        INTERSECTED;
+          INTERSECTED;
       var intersected;
-
+      
       function onMouseMove(event) {
         event.preventDefault();
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      
+        // Limit the values using if statements
+        if (mouse.x > 1) mouse.x = 1;
+        if (mouse.x < -1) mouse.x = -1;
+        if (mouse.y > 1) mouse.y = 1;
+        if (mouse.y < -1) mouse.y = -1;
       }
+      
       function onDocumentTouchStart(event) {
         if (event.touches.length == 1) {
           event.preventDefault();
-          mouse.x = event.touches[0].pageX - window.innerWidth / 2;
-          mouse.y = event.touches[0].pageY - window.innerHeight / 2;
+          mouse.x = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
+          mouse.y = -(event.touches[0].pageY / window.innerHeight) * 2 + 1;
+      
+          // Limit the values using if statements
+          if (mouse.x > 1) mouse.x = 1;
+          if (mouse.x < -1) mouse.x = -1;
+          if (mouse.y > 1) mouse.y = 1;
+          if (mouse.y < -1) mouse.y = -1;
         }
       }
+      
       function onDocumentTouchMove(event) {
         if (event.touches.length == 1) {
           event.preventDefault();
-          mouse.x = event.touches[0].pageX - window.innerWidth / 2;
-          mouse.y = event.touches[0].pageY - window.innerHeight / 2;
+          mouse.x = (event.touches[0].pageX / window.innerWidth) * 2 - 1;
+          mouse.y = -(event.touches[0].pageY / window.innerHeight) * 2 + 1;
+      
+          // Limit the values using if statements
+          if (mouse.x > 1) mouse.x = 1;
+          if (mouse.x < -1) mouse.x = -1;
+          if (mouse.y > 1) mouse.y = 1;
+          if (mouse.y < -1) mouse.y = -1;
         }
       }
+      
       window.addEventListener("mousemove", onMouseMove, false);
       window.addEventListener("touchstart", onDocumentTouchStart, false);
       window.addEventListener("touchmove", onDocumentTouchMove, false);
-
+           
       //----------------------------------------------------------------- Lights
       var ambientLight = new THREE.AmbientLight(0xffffff, 4);
       var lightFront = new THREE.SpotLight(0xffffff, 20, 10);
