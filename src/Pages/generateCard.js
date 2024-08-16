@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -28,6 +28,8 @@ import { collection, doc, getDoc, writeBatch } from "firebase/firestore";
 import { firestore } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
+import SaveIcon from "@mui/icons-material/Save";
+
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -64,6 +66,7 @@ export default function GenerateCard() {
   const [boxShadowColor, setBoxShadowColor] = useState([]);
   const [name, setName] = useState("");
   const [open, setOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // New state for authentication
   const navigate = useNavigate();
   const auth = getAuth();
   const user = auth.currentUser;
@@ -71,6 +74,16 @@ export default function GenerateCard() {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const handleSnackbarClose = () => setSnackbarOpen(false);
   const [selectedOptions, setSelectedOptions] = useState({});
+
+  useEffect(() => {
+    // Check if a user is logged in
+    if (user) {
+      setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(false);
+    }
+  }, [user]);
+
   const handleOptionChange = (index, value) => {
     setSelectedOptions((prev) => ({
       ...prev,
@@ -178,6 +191,11 @@ export default function GenerateCard() {
               label="Prompt Here..."
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSendClick(); // Trigger handleSendClick when Enter is pressed
+                }
+              }}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -299,21 +317,17 @@ export default function GenerateCard() {
                                   ([key, value], optionIndex) => (
                                     <FormControlLabel
                                       key={optionIndex}
-                                      value={`${key}) ${value}`} // Match the value to the format of the answer
+                                      value={value}
                                       control={
-                                        <Radio
-                                          sx={{
-                                            color: "white",
-                                          }}
-                                        />
+                                        <Radio sx={{ color: "white" }} />
                                       }
-                                      label={`${key}) ${value}`} // Display in the format "a) Paris"
+                                      label={value}
                                       sx={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        textAlign: "start",
                                         color: "white",
-                                        marginBottom: "5px",
+                                        fontSize: "clamp(12px , 15px, 17px)",
+                                        "& .MuiSvgIcon-root": {
+                                          fontSize: 22,
+                                        },
                                       }}
                                     />
                                   )
@@ -329,23 +343,26 @@ export default function GenerateCard() {
                               width: "100%",
                               height: "100%",
                               backfaceVisibility: "hidden",
-                              transform: "rotateY(180deg)",
                               display: "flex",
                               justifyContent: "center",
                               alignItems: "center",
                               background:
-                                "linear-gradient(130deg, #F98CB9, violet,purple  )",
+                                "linear-gradient(130deg, purple, violet, #F98CB9 )",
                               color: "white",
-                              padding: 2,
                               boxSizing: "border-box",
+                              borderRadius: "8px",
+                              transform: "rotateY(180deg)",
+                              padding: "15px",
                             }}
                           >
                             <Typography
-                              variant="h6"
-                              component="div"
                               textAlign="center"
+                              sx={{
+                                fontSize: "clamp(12px , 15px, 17px)",
+                                fontWeight: "bold",
+                              }}
                             >
-                              {flashcard.answer}
+                              Answer: {flashcard.answer}
                             </Typography>
                           </Box>
                         </Box>
@@ -355,61 +372,65 @@ export default function GenerateCard() {
                 </Grid>
                 <Box
                   sx={{
-                    mt: 4,
                     display: "flex",
                     justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
                   <Button
-                    variant="contained"
                     onClick={handleOpen}
+                    variant="contained"
+                    startIcon={<SaveIcon />}
                     sx={{
-                      background: "purple",
+                      mt: 4,
+                      width: "150px",
+                      padding: "10px",
+                      bgcolor: "purple",
                       color: "white",
                       "&:hover": {
-                        backgroundColor: "purple",
-                        color: "white",
+                        bgcolor: "violet",
+                      },
+                      "&:disabled": {
+                        bgcolor: "gray",
                       },
                     }}
+                    disabled={!isAuthenticated} // Disable button if not authenticated
                   >
                     Save
                   </Button>
                 </Box>
+                <Dialog open={open} onClose={handleClose}>
+                  <DialogTitle>Save Flashcards</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText>
+                      Please enter a collection name for your flashcards.
+                    </DialogContentText>
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="name"
+                      label="Flashcards Name"
+                      type="text"
+                      fullWidth
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={saveFlashcards}>Save</Button>
+                  </DialogActions>
+                </Dialog>
+                <Snackbar
+                  open={snackbarOpen}
+                  autoHideDuration={3000}
+                  onClose={handleSnackbarClose}
+                  message={snackbarMessage}
+                />
               </Box>
             )}
-
-            {/* Save Flashcards Dialog */}
-            <Dialog open={open} onClose={handleClose}>
-              <DialogTitle>Save Flashcards</DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  Please enter a name for your flashcard collection:
-                </DialogContentText>
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  label="Collection Name"
-                  type="text"
-                  fullWidth
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={saveFlashcards}>Save</Button>
-              </DialogActions>
-            </Dialog>
           </div>
         </Grid>
-
-        {/* Snackbar Notification */}
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={6000}
-          onClose={handleSnackbarClose}
-          message={snackbarMessage}
-        />
       </Grid>
     </div>
   );
