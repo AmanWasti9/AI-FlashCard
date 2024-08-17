@@ -85,13 +85,17 @@ export default function GenerateCard() {
   }, [user]);
 
   const handleOptionChange = (index, value) => {
+    // Remove the "a) ", "b) ", or "c) " prefix from the answer
+    const correctAnswer = flashcards[index].answer.replace(/^[a-c]\)\s*/, "");
+
+    // Check if the selected option is correct
+    const isCorrect = value === correctAnswer;
+
     setSelectedOptions((prev) => ({
       ...prev,
       [index]: value,
     }));
 
-    // Check if the selected option is correct
-    const isCorrect = value === flashcards[index].answer;
     setBoxShadowColor((prev) => ({
       ...prev,
       [index]: isCorrect ? "0 0 3px 5px #66FF00" : "0 0 3px 5px red",
