@@ -39,6 +39,8 @@ import { firestore } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import SaveIcon from "@mui/icons-material/Save";
+import * as leader from "../components/leaderboard";
+
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -212,11 +214,32 @@ export default function GenerateCard() {
         }
 
         console.log("Points and correct questions updated successfully");
+        await leaderboard();
       } catch (error) {
         console.error("Error updating points and correct questions:", error);
       }
     }
   };
+  const leaderboard = async () => {
+    const ref = doc(firestore, "Users", user.uid);
+    const docSnap = await getDoc(ref);
+
+    const pointsDocRef = doc(firestore, "points", user.uid);
+    const userPoints = await getDoc(pointsDocRef);
+    try{
+    if (docSnap.exists()) {
+      const userData = docSnap.data();
+      const username = `${userData.firstName} ${userData.lastName}`;
+      const points = `${userPoints.data().totalPoints}`;
+      
+      leader.AddUserInLeaderboard(username,points,user);
+
+    }
+    } catch(error){
+      console.log("No such document!");
+    }
+  };
+
 
   return (
     <div>
