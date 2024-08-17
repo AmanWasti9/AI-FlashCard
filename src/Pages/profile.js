@@ -1,13 +1,24 @@
 import React, { useEffect, useState } from "react";
 import "./profile.css";
-import { Avatar, Box, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { firestore } from "../firebase";
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import CircleProgress from "../components/circleprogress";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import { GetUserRank } from "../components/leaderboard"; // Updated import
+import { GetLeaderboard, GetUserRank } from "../components/leaderboard"; // Updated import
 import RankTable from "../components/rankTable"; // Correct import
 import CheckIcon from "@mui/icons-material/Check";
 
@@ -19,8 +30,15 @@ const UserProfile = () => {
   const [userFirstName, setUserFirstName] = useState("");
   const [points, setPoints] = useState(0);
   const [correctedQuestion, setCorrectedQuestion] = useState(0);
+  const [open, setOpen] = useState(false);
 
   const [userRank, setUserRank] = useState(null); // State for storing the user's rank
+
+  // State for dialog input fields
+  const [first, setFirst] = useState("");
+  const [last, setLast] = useState("");
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
     if (user) {
@@ -37,6 +55,8 @@ const UserProfile = () => {
         if (docSnap.exists()) {
           const userData = docSnap.data();
           setUserFirstName(capitalizeFirstLetter(userData.firstName));
+          setFirst(userData.firstName); // Set dialog input fields with the current name
+          setLast(userData.lastName); // Set dialog input fields with the current name
         }
       });
 
@@ -66,6 +86,46 @@ const UserProfile = () => {
   };
 
   const avatarLetter = userFirstName.charAt(0).toUpperCase();
+
+  const updateData = async () => {
+    try {
+      if (!user) {
+        console.error("No user is signed in.");
+        return;
+      }
+
+      const docRef = doc(firestore, "Users", user.uid);
+      await updateDoc(docRef, {
+        firstName: first,
+        lastName: last,
+      });
+
+      const docRef1 = doc(firestore, "leaderboard", user.uid);
+      await updateDoc(docRef1, {
+        username: first + " " + last,
+      });
+
+      console.log("Document updated successfully");
+
+      setUserFirstName(capitalizeFirstLetter(first));
+      setUsername(first + " " + last);
+
+      // Fetch the updated leaderboard after name change
+      const updatedLeaderboard = await GetLeaderboard();
+      setLeaderboard(updatedLeaderboard); // Update leaderboard with new data
+
+      handleClose(); // Close the dialog after successful update
+    } catch (error) {
+      console.error("Error updating document: ", error);
+    }
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <Box
@@ -177,38 +237,48 @@ const UserProfile = () => {
             <p className="group-hover-text">Happy</p>
           </div>
           <div className="calories-container group">
-            <div className="group-hover-icon">
-              <svg
-                viewBox="0 0 48 48"
-                fill="none"
-                height="48"
-                width="48"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <g clip-path="url(#a)">
-                  <path
-                    d="M23.896 45.36C10.463 43.172 1.63 29.859 3.819 16.426A24.007 24.007 0 0 1 15.863 3.818C29.295 1.63 38.128 14.943 35.94 28.376a24.007 24.007 0 0 1-12.044 12.044h.002Z"
-                    fill="#B49A18"
-                  ></path>
-                  <path
-                    d="M27.85 15.282a1.94 1.94 0 0 0-1.94 1.94v7.761a3.88 3.88 0 0 1-3.878 3.88h-.97a1.94 1.94 0 0 0-1.94 1.938v.97a1.94 1.94 0 0 0 1.94 1.94h.97a7.759 7.759 0 0 0 7.757-7.758v-7.761a1.94 1.94 0 0 0-1.939-1.94Z"
-                    fill="#fff"
-                  ></path>
-                </g>
-                <defs>
-                  <clipPath id="a">
-                    <path d="M0 0h48v48H0z" fill="#fff"></path>
-                  </clipPath>
-                </defs>
-              </svg>
+            <div className="group-hover-icon" onClick={handleOpen}>
+              <EmojiEventsIcon
+                sx={{
+                  color: "violet",
+                  fontSize: "50px",
+                }}
+              />
             </div>
-            <p className="group-hover-text">2,187 cal</p>
+            <p className="group-hover-text">Change Username</p>
           </div>
         </div>
       </div>
       <div>
         <RankTable />
       </div>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Update Name</DialogTitle>
+        <DialogContent>
+          <DialogContentText>First Name and Last Name.</DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="First Name"
+            type="text"
+            fullWidth
+            value={first}
+            onChange={(e) => setFirst(e.target.value)}
+          />
+          <TextField
+            margin="dense"
+            label="Last Name"
+            type="text"
+            fullWidth
+            value={last}
+            onChange={(e) => setLast(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={updateData}>Save</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
