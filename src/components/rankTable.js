@@ -28,8 +28,6 @@ export default function RankTable() {
     fetchLeaderboard();
   }, []);
 
-  //   const avatarLetter = userFirstName.charAt(0).toUpperCase();
-
   const containerStyle = {
     margin: "0 auto",
     padding: "2rem",
@@ -115,48 +113,47 @@ export default function RankTable() {
           </tr>
         </thead>
         <tbody>
-          {leaderboard.map((entry, index) => (
-            <tr
-              key={index} // Use index or a unique identifier if available
-              style={{ ...trStyle, animationDelay: `${index * 0.1}s` }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.background =
-                  "linear-gradient(to right, #8a2be2, #6a0dad, #1a1a1a)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.background =
-                  "linear-gradient(to right, #1a1a1a, #000000, #1a1a1a)")
-              }
-            >
-              <td style={tdStyle}>#{index + 1}</td>
-              <td style={{ ...tdStyle, display: "flex", alignItems: "center" }}>
-                <Avatar
-                  //   style={avatarStyle}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style = avatarHoverStyle)
-                  }
-                  onMouseLeave={(e) => (e.currentTarget.style = avatarStyle)}
-                  sx={{
-                    bgcolor: "violet",
-                    border: "2px solid violet",
-                    width: "5vh",
-                    height: "5vh",
-                    marginRight: "10px",
-                  }}
+          {leaderboard
+            .sort((a, b) => b.score - a.score) // Sort by score in descending order
+            .map((entry, index) => (
+              <tr
+                key={index} // Use index or a unique identifier if available
+                style={{ ...trStyle, animationDelay: `${index * 0.1}s` }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.background =
+                    "linear-gradient(to right, #8a2be2, #6a0dad, #1a1a1a)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.background =
+                    "linear-gradient(to right, #1a1a1a, #000000, #1a1a1a)")
+                }
+              >
+                <td style={tdStyle}>#{index + 1}</td>
+                <td
+                  style={{ ...tdStyle, display: "flex", alignItems: "center" }}
                 >
-                  {entry.username.charAt(0).toUpperCase()}
-                </Avatar>
-                <span
-                  style={{
-                    color: "white",
-                  }}
-                >
-                  {entry.username}
-                </span>
-              </td>
-              <td style={pointsStyle}>{entry.score}</td>
-            </tr>
-          ))}
+                  <Avatar
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style = avatarHoverStyle)
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style = avatarStyle)
+                    }
+                    sx={{
+                      bgcolor: "violet",
+                      border: "2px solid violet",
+                      width: "5vh",
+                      height: "5vh",
+                      marginRight: "10px",
+                    }}
+                  >
+                    {entry.username.charAt(0).toUpperCase()}
+                  </Avatar>
+                  <span style={{ color: "white" }}>{entry.username}</span>
+                </td>
+                <td style={pointsStyle}>{entry.score}</td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>
