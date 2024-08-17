@@ -24,7 +24,17 @@ import {
 import SendIcon from "@mui/icons-material/Send";
 import "../App.css";
 import { PromptService } from "../Services/PromptService";
-import { collection, doc, getDoc, writeBatch } from "firebase/firestore";
+import {
+  arrayUnion,
+  collection,
+  doc,
+  getDoc,
+  increment,
+  onSnapshot,
+  setDoc,
+  updateDoc,
+  writeBatch,
+} from "firebase/firestore";
 import { firestore } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
@@ -74,11 +84,22 @@ export default function GenerateCard() {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const handleSnackbarClose = () => setSnackbarOpen(false);
   const [selectedOptions, setSelectedOptions] = useState({});
-
+  const [points, setPoints] = useState(0);
   useEffect(() => {
-    // Check if a user is logged in
     if (user) {
       setIsAuthenticated(true);
+
+      // Listen for real-time updates to the user's points
+      const pointsDocRef = doc(firestore, "points", user.uid);
+      const unsubscribe = onSnapshot(pointsDocRef, (doc) => {
+        if (doc.exists()) {
+          const data = doc.data();
+          setPoints(data.totalPoints || 0); // Update points state
+        }
+      });
+
+      // Cleanup subscription on unmount
+      return () => unsubscribe();
     } else {
       setIsAuthenticated(false);
     }
@@ -102,7 +123,9 @@ export default function GenerateCard() {
     }));
 
     // Flip the card only if the selected option is incorrect
-    if (!isCorrect) {
+    if (isCorrect) {
+      updatePoints(flashcards[index].question); // Pass the correct question to updatePoints
+    } else {
       setFlipped((prev) => ({
         ...prev,
         [index]: true,
@@ -165,6 +188,34 @@ export default function GenerateCard() {
     handleClose();
     setSnackbarMessage("Your Cards are Saved.");
     setSnackbarOpen(true);
+  };
+
+  const updatePoints = async (question) => {
+    if (user) {
+      const pointsDocRef = doc(firestore, "points", user.uid);
+
+      try {
+        const docSnap = await getDoc(pointsDocRef);
+
+        if (docSnap.exists()) {
+          // If the document exists, update the points and add the question to the array
+          await updateDoc(pointsDocRef, {
+            totalPoints: increment(2),
+            correctQuestions: arrayUnion(question), // Add the correct question to the array
+          });
+        } else {
+          // If the document doesn't exist, create it and set the initial points and array with the first question
+          await setDoc(pointsDocRef, {
+            totalPoints: 2, // Initialize with 2 points for the correct answer
+            correctQuestions: [question], // Initialize with the first correct question in an array
+          });
+        }
+
+        console.log("Points and correct questions updated successfully");
+      } catch (error) {
+        console.error("Error updating points and correct questions:", error);
+      }
+    }
   };
 
   return (
@@ -249,6 +300,9 @@ export default function GenerateCard() {
             >
               Generated Flashcards:
             </h3>
+            <Typography variant="h6" style={{ color: "white" }}>
+              Points: {points} {/* Display points here */}
+            </Typography>
             {flashcards.length > 0 && (
               <Box
                 sx={{
