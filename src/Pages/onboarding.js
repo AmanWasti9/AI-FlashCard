@@ -185,7 +185,7 @@ export default function Onboarding() {
           }}
         >
           <Typography fontSize={"40px"}>
-            <CircleProgress value={displayCount} max={100} />
+            <CircleProgress value={displayCount} max={150} />
             {/* Set max as needed */}
           </Typography>
           <Typography
