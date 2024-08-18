@@ -3,7 +3,9 @@ h1 {
   margin-bottom: 1em;
 }
 .main_card {
-  padding: 50px 70px;
+  padding: 5px 70px;
+  display: flex;
+  flex-direction: column;
 }
 .card {
   background: linear-gradient(130deg, purple, violet, #f98cb9);

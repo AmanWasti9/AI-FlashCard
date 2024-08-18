@@ -13,6 +13,10 @@ ul {
   padding: 20px; /* Added padding for better appearance */
   height: 70px;
   width: 300px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  box-shadow: 0 0 20px rgba(196, 11, 162, 0.6), 0 0 30px rgba(128, 0, 255, 0.6);
 }
 
 .example-1 .icon-content {

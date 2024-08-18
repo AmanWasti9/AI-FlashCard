@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import PointsCounter from "../components/timers";
 import {
   Container,
   TextField,
@@ -41,7 +40,9 @@ import { useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import SaveIcon from "@mui/icons-material/Save";
 import * as leader from "../components/leaderboard";
-
+import CircularProgress from "@mui/material/CircularProgress"; // Import CircularProgress
+import Loader from "../components/Loader";
+import PointsCounter from "../components/counter";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -88,6 +89,8 @@ export default function GenerateCard() {
   const handleSnackbarClose = () => setSnackbarOpen(false);
   const [selectedOptions, setSelectedOptions] = useState({});
   const [points, setPoints] = useState(0);
+  const [loading, setLoading] = useState(false); // New state for loading
+
   useEffect(() => {
     if (user) {
       setIsAuthenticated(true);
@@ -149,12 +152,16 @@ export default function GenerateCard() {
       return;
     }
 
+    setLoading(true); // Set loading to true when fetching begins
+
     try {
       const result = await PromptService(inputValue);
       console.log(result);
       setFlashcards(result.flashcards);
     } catch (error) {
       console.error("Error fetching flashcards:", error);
+    } finally {
+      setLoading(false); // Set loading to false after fetching completes
     }
   };
 
@@ -227,23 +234,24 @@ export default function GenerateCard() {
 
     const pointsDocRef = doc(firestore, "points", user.uid);
     const userPoints = await getDoc(pointsDocRef);
-    try{
-    if (docSnap.exists()) {
-      const userData = docSnap.data();
-      const username = `${userData.firstName} ${userData.lastName}`;
-      const points = `${userPoints.data().totalPoints}`;
-      
-      leader.AddUserInLeaderboard(username,points,user);
+    try {
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
+        const username = `${userData.firstName} ${userData.lastName}`;
+        const points = `${userPoints.data().totalPoints}`;
 
-    }
-    } catch(error){
+        leader.AddUserInLeaderboard(username, points, user);
+      }
+    } catch (error) {
       console.log("No such document!");
     }
   };
 
-
   return (
     <div>
+      <Typography variant="h6" style={{ color: "white" }}>
+        <PointsCounter pointss={points} />
+      </Typography>
       <Grid container spacing={2}>
         <Grid item xs={12} md={12}>
           <div
@@ -324,192 +332,202 @@ export default function GenerateCard() {
             >
               Generated Flashcards:
             </h3>
-            <Typography variant="h6" style={{ color: "white" }}>
-              Points: {points} {/* Display points here */}
-            </Typography>
-            {flashcards.length > 0 && (
+
+            {loading ? (
               <Box
                 sx={{
-                  mt: 4,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                <Grid container spacing={2}>
-                  {flashcards.map((flashcard, index) => (
-                    <Grid item xs={12} sm={6} md={4} key={index}>
-                      <Card
-                        sx={{
-                          height: "420px",
-                          boxShadow: boxShadowColor[index],
-                          cursor: "pointer",
-                          perspective: "1000px",
-                          borderRadius: "10px",
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            width: "100%",
-                            height: "100%",
-                            transform: flipped[index]
-                              ? "rotateY(180deg)"
-                              : "rotateY(0deg)",
-                            transformStyle: "preserve-3d",
-                            transition: "transform 0.6s",
-                            position: "relative",
-                            borderRadius: "8px",
-                          }}
-                        >
-                          {/* Front Side of the Card */}
-                          <Box
-                            sx={{
-                              position: "absolute",
-                              width: "100%",
-                              height: "100%",
-                              backfaceVisibility: "hidden",
-                              display: "flex",
-                              flexDirection: "column",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              background:
-                                "linear-gradient(130deg, purple, violet, #F98CB9 )",
-                              color: "white",
-                              boxSizing: "border-box",
-                              borderRadius: "8px",
-                              padding: "15px",
-                            }}
-                          >
-                            <Typography
-                              textAlign="center"
-                              sx={{
-                                fontSize: "clamp(12px , 15px, 17px)",
-                                fontWeight: "bold",
-                              }}
-                            >
-                              {flashcard.question}
-                            </Typography>
-                            {/* Display options below the question */}
-                            {flashcard.options && (
-                              <RadioGroup
-                                sx={{ marginTop: 2, width: "100%" }}
-                                value={selectedOptions[index] || ""}
-                                onChange={(e) =>
-                                  handleOptionChange(index, e.target.value)
-                                }
-                              >
-                                {Object.entries(flashcard.options).map(
-                                  ([key, value], optionIndex) => (
-                                    <FormControlLabel
-                                      key={optionIndex}
-                                      value={value}
-                                      control={
-                                        <Radio sx={{ color: "white" }} />
-                                      }
-                                      label={value}
-                                      sx={{
-                                        color: "white",
-                                        fontSize: "clamp(12px , 15px, 17px)",
-                                        "& .MuiSvgIcon-root": {
-                                          fontSize: 22,
-                                        },
-                                      }}
-                                    />
-                                  )
-                                )}
-                              </RadioGroup>
-                            )}
-                          </Box>
-
-                          {/* Back Side of the Card */}
-                          <Box
-                            sx={{
-                              position: "absolute",
-                              width: "100%",
-                              height: "100%",
-                              backfaceVisibility: "hidden",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              background:
-                                "linear-gradient(130deg, purple, violet, #F98CB9 )",
-                              color: "white",
-                              boxSizing: "border-box",
-                              borderRadius: "8px",
-                              transform: "rotateY(180deg)",
-                              padding: "15px",
-                            }}
-                          >
-                            <Typography
-                              textAlign="center"
-                              sx={{
-                                fontSize: "clamp(12px , 15px, 17px)",
-                                fontWeight: "bold",
-                              }}
-                            >
-                              Answer: {flashcard.answer}
-                            </Typography>
-                          </Box>
-                        </Box>
-                      </Card>
-                    </Grid>
-                  ))}
-                </Grid>
+                <Loader />
+              </Box>
+            ) : (
+              flashcards.length > 0 && (
                 <Box
                   sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    mt: 4,
                   }}
                 >
-                  <Button
-                    onClick={handleOpen}
-                    variant="contained"
-                    startIcon={<SaveIcon />}
+                  <Grid container spacing={2}>
+                    {flashcards.map((flashcard, index) => (
+                      <Grid item xs={12} sm={6} md={4} key={index}>
+                        <Card
+                          sx={{
+                            height: "420px",
+                            boxShadow: boxShadowColor[index],
+                            cursor: "pointer",
+                            perspective: "1000px",
+                            borderRadius: "10px",
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              width: "100%",
+                              height: "100%",
+                              transform: flipped[index]
+                                ? "rotateY(180deg)"
+                                : "rotateY(0deg)",
+                              transformStyle: "preserve-3d",
+                              transition: "transform 0.6s",
+                              position: "relative",
+                              borderRadius: "8px",
+                            }}
+                          >
+                            {/* Front Side of the Card */}
+                            <Box
+                              sx={{
+                                position: "absolute",
+                                width: "100%",
+                                height: "100%",
+                                backfaceVisibility: "hidden",
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                background:
+                                  "linear-gradient(130deg, purple, violet, #F98CB9 )",
+                                color: "white",
+                                boxSizing: "border-box",
+                                borderRadius: "8px",
+                                padding: "15px",
+                              }}
+                            >
+                              <Typography
+                                textAlign="center"
+                                sx={{
+                                  fontSize: "clamp(12px , 15px, 17px)",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {flashcard.question}
+                              </Typography>
+                              {/* Display options below the question */}
+                              {flashcard.options && (
+                                <RadioGroup
+                                  sx={{ marginTop: 2, width: "100%" }}
+                                  value={selectedOptions[index] || ""}
+                                  onChange={(e) =>
+                                    handleOptionChange(index, e.target.value)
+                                  }
+                                >
+                                  {Object.entries(flashcard.options).map(
+                                    ([key, value], optionIndex) => (
+                                      <FormControlLabel
+                                        key={optionIndex}
+                                        value={value}
+                                        control={
+                                          <Radio sx={{ color: "white" }} />
+                                        }
+                                        label={value}
+                                        sx={{
+                                          color: "white",
+                                          fontSize: "clamp(12px , 15px, 17px)",
+                                          "& .MuiSvgIcon-root": {
+                                            fontSize: 22,
+                                          },
+                                        }}
+                                      />
+                                    )
+                                  )}
+                                </RadioGroup>
+                              )}
+                            </Box>
+
+                            {/* Back Side of the Card */}
+                            <Box
+                              sx={{
+                                position: "absolute",
+                                width: "100%",
+                                height: "100%",
+                                backfaceVisibility: "hidden",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                background:
+                                  "linear-gradient(130deg, purple, violet, #F98CB9 )",
+                                color: "white",
+                                boxSizing: "border-box",
+                                borderRadius: "8px",
+                                transform: "rotateY(180deg)",
+                                padding: "15px",
+                              }}
+                            >
+                              <Typography
+                                textAlign="center"
+                                sx={{
+                                  fontSize: "clamp(12px , 15px, 17px)",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                Answer: {flashcard.answer}
+                              </Typography>
+                            </Box>
+                          </Box>
+                        </Card>
+                      </Grid>
+                    ))}
+                  </Grid>
+                  <Box
                     sx={{
-                      mt: 4,
-                      width: "150px",
-                      padding: "10px",
-                      bgcolor: "purple",
-                      color: "white",
-                      "&:hover": {
-                        bgcolor: "violet",
-                      },
-                      "&:disabled": {
-                        bgcolor: "gray",
-                      },
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
-                    disabled={!isAuthenticated} // Disable button if not authenticated
                   >
-                    Save
-                  </Button>
+                    <Button
+                      onClick={handleOpen}
+                      variant="contained"
+                      startIcon={<SaveIcon />}
+                      sx={{
+                        mt: 4,
+                        width: "150px",
+                        padding: "10px",
+                        bgcolor: "purple",
+                        color: "white",
+                        "&:hover": {
+                          bgcolor: "violet",
+                        },
+                        "&:disabled": {
+                          bgcolor: "gray",
+                        },
+                      }}
+                      disabled={!isAuthenticated} // Disable button if not authenticated
+                    >
+                      Save
+                    </Button>
+                  </Box>
+                  <Dialog open={open} onClose={handleClose}>
+                    <DialogTitle>Save Flashcards</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        Please enter a collection name for your flashcards.
+                      </DialogContentText>
+                      <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="Flashcards Name"
+                        type="text"
+                        fullWidth
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                      />
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={handleClose}>Cancel</Button>
+                      <Button onClick={saveFlashcards}>Save</Button>
+                    </DialogActions>
+                  </Dialog>
+                  <Snackbar
+                    open={snackbarOpen}
+                    autoHideDuration={3000}
+                    onClose={handleSnackbarClose}
+                    message={snackbarMessage}
+                  />
                 </Box>
-                <Dialog open={open} onClose={handleClose}>
-                  <DialogTitle>Save Flashcards</DialogTitle>
-                  <DialogContent>
-                    <DialogContentText>
-                      Please enter a collection name for your flashcards.
-                    </DialogContentText>
-                    <TextField
-                      autoFocus
-                      margin="dense"
-                      id="name"
-                      label="Flashcards Name"
-                      type="text"
-                      fullWidth
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    />
-                  </DialogContent>
-                  <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={saveFlashcards}>Save</Button>
-                  </DialogActions>
-                </Dialog>
-                <Snackbar
-                  open={snackbarOpen}
-                  autoHideDuration={3000}
-                  onClose={handleSnackbarClose}
-                  message={snackbarMessage}
-                />
-              </Box>
+              )
             )}
           </div>
         </Grid>
@@ -517,6 +535,3 @@ export default function GenerateCard() {
     </div>
   );
 }
-
-
-
