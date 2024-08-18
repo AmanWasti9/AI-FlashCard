@@ -52,12 +52,20 @@ const PdfTextExtractor = () => {
 
       const prompt = `Create 10 flashcards with questions and three options based on this PDF text: ${text}. The format should be:\n\nQuestion: [question here]\na) [option 1]\nb) [option 2]\nc) [option 3]\nAnswer: [correct answer here]`;
 
+      // const prompt = `Create 10 flashcards with questions and three options based on this PDF text: ${text}. The format should be:\n\n" +
+      // "Question: [question here]\n" +
+      // "a) [option 1]\n" +
+      // "b) [option 2]\n" +
+      // "c) [option 3]\n" +
+      // "Answer: [correct answer here]`;
+
       const response = await model.generateContent(prompt, generationConfig);
       console.log(response);
       console.log(response.response.candidates[0]?.content?.parts[0]?.text);
       const flashcard =
         response.response.candidates[0]?.content?.parts[0]?.text ||
         "no flashcard generated";
+
       setFlashcards(flashcard); // Store generated flashcards in state
     } catch (error) {
       console.error("Error generating flashcards:", error);

@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Container,
+  Dialog,
   Divider,
   IconButton,
   Popover,
@@ -30,6 +31,7 @@ import {
 import { getDoc, updateDoc, doc, collection, setDoc } from "firebase/firestore";
 import { firestore } from "../firebase";
 import PdfTextExtractor from "./pdf-reader";
+import { MdFeedback } from "react-icons/md";
 
 export default function Dashboard() {
   const auth = getAuth(); // Initialize Firebase Auth
@@ -44,9 +46,20 @@ export default function Dashboard() {
   const [error, setError] = useState("");
   const [data, setData] = useState({});
   const [chatInitialized, setChatInitialized] = useState(false); // New state
+  const [open1, setOpen] = useState(false);
+
+  const [name, setName] = useState("");
+  const [feedback, setFeedback] = useState("");
 
   const API_KEY = "AIzaSyDYmligr0eUjKVNQqXJRKfFacWbWSiaPN0";
   const genAI = new GoogleGenerativeAI(API_KEY);
+
+  const handleOpen1 = () => {
+    setOpen(true);
+  };
+  const handleClose1 = () => {
+    setOpen(false);
+  };
 
   const model = genAI.getGenerativeModel({
     model: "gemini-1.5-flash",
@@ -305,6 +318,31 @@ export default function Dashboard() {
 
   const { primary, secondary, accent, text } = getThemeColors();
 
+  // Handle form submission
+  const handleSubmitFeedback = async (e) => {
+    e.preventDefault(); // Prevent page reload on form submission
+
+    if (!user) return; // Ensure user is logged in
+
+    try {
+      // Create a feedback document
+      const feedbackDocRef = doc(collection(firestore, "feedback"), user.uid);
+      await setDoc(feedbackDocRef, {
+        userId: user.uid,
+        name: name,
+        feedback: feedback,
+        timestamp: new Date(),
+      });
+
+      console.log("Feedback submitted successfully");
+      setName(""); // Clear the form fields
+      setFeedback(""); // Clear the form fields
+      handleClose1(); // Close the dialog
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -349,6 +387,22 @@ export default function Dashboard() {
           }}
         >
           <GeminiBtn />
+        </Button>
+
+        <Button
+          onClick={handleOpen1}
+          style={{
+            position: "fixed",
+            bottom: 15,
+            right: 26,
+            borderRadius: "50%",
+            width: "100px",
+            height: "100px",
+            cursor: "pointer",
+            color: "white",
+          }}
+        >
+          <MdFeedback />
         </Button>
       </Box>
       <Box
@@ -525,6 +579,41 @@ export default function Dashboard() {
             </Box>
           </Box>
         </Popover>
+
+        <Dialog
+          open={open1}
+          onClose={handleClose1}
+          PaperProps={{
+            style: {
+              backgroundColor: "transparent", // Set the background color to transparent
+              boxShadow: "none", // Optional: remove the default box shadow
+            },
+          }}
+        >
+          <div className="form-container">
+            <form className="form" onSubmit={handleSubmitFeedback}>
+              <div className="form-group">
+                <label for="email">Your Name</label>
+                <input type="text" id="email" name="email" required="" />
+              </div>
+              <div className="form-group">
+                <label for="textarea">How can we improve?</label>
+                <textarea
+                  name="textarea"
+                  id="textarea"
+                  rows="10"
+                  cols="50"
+                  required=""
+                >
+                  {" "}
+                </textarea>
+              </div>
+              <button className="form-submit-btn" type="submit">
+                Submit
+              </button>
+            </form>
+          </div>
+        </Dialog>
       </Box>
     </Box>
   );

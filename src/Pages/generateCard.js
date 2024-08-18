@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -43,6 +44,12 @@ import * as leader from "../components/leaderboard";
 import CircularProgress from "@mui/material/CircularProgress"; // Import CircularProgress
 import Loader from "../components/Loader";
 import PointsCounter from "../components/counter";
+
+import * as pdfjsLib from "pdfjs-dist";
+import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -89,7 +96,11 @@ export default function GenerateCard() {
   const handleSnackbarClose = () => setSnackbarOpen(false);
   const [selectedOptions, setSelectedOptions] = useState({});
   const [points, setPoints] = useState(0);
-  const [loading, setLoading] = useState(false); // New state for loading
+  const [loading, setLoading] = useState(false);
+  const [selectedAnswers, setSelectedAnswers] = useState({}); // Track user selections
+
+  const [pdfText, setPdfText] = useState("");
+  // const [flashcardpdf, setFlashcardpdf] = useState("");
 
   useEffect(() => {
     if (user) {
@@ -158,11 +169,19 @@ export default function GenerateCard() {
       const result = await PromptService(inputValue);
       console.log(result);
       setFlashcards(result.flashcards);
+
+      resetCardStates();
     } catch (error) {
       console.error("Error fetching flashcards:", error);
     } finally {
       setLoading(false); // Set loading to false after fetching completes
     }
+  };
+
+  const resetCardStates = () => {
+    setFlipped([]);
+    setBoxShadowColor([]);
+    setSelectedOptions({});
   };
 
   const saveFlashcards = async () => {
@@ -247,6 +266,106 @@ export default function GenerateCard() {
     }
   };
 
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const fileReader = new FileReader();
+      fileReader.onload = async function () {
+        const typedArray = new Uint8Array(this.result);
+        const pdf = await pdfjsLib.getDocument(typedArray).promise;
+        let extractedText = "";
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          const pageText = textContent.items.map((item) => item.str).join(" ");
+          extractedText += pageText + " ";
+        }
+        setPdfText(extractedText);
+        await generateFlashcards(extractedText); // Call flashcard generation after text extraction
+      };
+      fileReader.readAsArrayBuffer(file);
+    }
+  };
+
+  const generateFlashcards = async (text) => {
+    setLoading(true);
+    try {
+      const genAI = new GoogleGenerativeAI(
+        "AIzaSyCxBuFSEBJKhPZ6P4JzM46IhfVGzUfnbzU" // Replace with your actual API key
+      );
+
+      const model = genAI.getGenerativeModel({
+        model: "gemini-pro",
+      });
+
+      const generationConfig = {
+        temperature: 1,
+        topP: 0.95,
+        topK: 64,
+        maxOutputTokens: 8192,
+        responseMimeType: "text/plain",
+      };
+
+      const prompt = `Create 10 flashcards with questions and three options based on this PDF text: ${text}. The format should be:\n\n" +
+      "Question: [question here]\n" +
+      "a) [option 1]\n" +
+      "b) [option 2]\n" +
+      "c) [option 3]\n" +
+      "Answer: [correct answer here, do not include "a)", "b)", or "c)"]`;
+      const response = await model.generateContent(prompt, generationConfig);
+
+      const rawText =
+        response.response.candidates[0]?.content?.parts[0]?.text || "";
+
+      const flashcards = rawText
+        .split("\n\n")
+        .reduce((acc, flashcard, index) => {
+          const questionMatch = flashcard.match(/Question:\s*(.*)/i);
+          const optionAMatch = flashcard.match(/a\)\s*(.*)/i);
+          const optionBMatch = flashcard.match(/b\)\s*(.*)/i);
+          const optionCMatch = flashcard.match(/c\)\s*(.*)/i);
+          const answerMatch = flashcard.match(/Answer:\s*(.*)/i);
+
+          if (
+            questionMatch &&
+            optionAMatch &&
+            optionBMatch &&
+            optionCMatch &&
+            answerMatch
+          ) {
+            acc.push({
+              id: index + 1,
+              question: questionMatch[1].trim(),
+              options: {
+                a: optionAMatch[1].trim(),
+                b: optionBMatch[1].trim(),
+                c: optionCMatch[1].trim(),
+              },
+              answer: answerMatch[1].trim(),
+            });
+          }
+
+          return acc;
+        }, []);
+
+      console.log(flashcards);
+      setFlashcards(flashcards); // Store generated flashcards in state
+      resetCardStates();
+    } catch (error) {
+      console.error("Error generating flashcards:", error);
+      setFlashcards([
+        {
+          id: 1,
+          question: "Error",
+          options: { a: "", b: "", c: "" },
+          answer: "Unable to generate flashcards",
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
       <Typography variant="h6" style={{ color: "white" }}>
@@ -276,6 +395,7 @@ export default function GenerateCard() {
               role={undefined}
               variant="contained"
               tabIndex={-1}
+              onChange={handleFileChange}
               startIcon={
                 <CloudUploadIcon
                   style={{
@@ -286,10 +406,10 @@ export default function GenerateCard() {
               sx={{
                 backgroundColor: "#000",
                 color: "white",
-                boxShadow: "0 0 10px rgba(148, 0, 211, 0.7)", // Purple color with a high opacity
-                border: "2px solid rgba(148, 0, 211, 0.5)", // Purple border with a slightly lower opacity
+                boxShadow: "0 0 10px rgba(148, 0, 211, 0.7)",
+                border: "2px solid rgba(148, 0, 211, 0.5)",
                 backgroundImage:
-                  "linear-gradient(145deg, rgba(75, 0, 130, 0.5), rgba(148, 0, 211, 0.8))", // Gradient from dark violet to purple
+                  "linear-gradient(145deg, rgba(75, 0, 130, 0.5), rgba(148, 0, 211, 0.8))",
                 backgroundClip: "padding-box",
                 fontSize: "30px",
                 padding: "30px",
