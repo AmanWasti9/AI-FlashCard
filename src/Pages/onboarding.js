@@ -12,6 +12,7 @@ import {
 import { firestore } from "../firebase"; // Ensure you import and initialize Firebase correctly
 import { setDoc, doc, getDocs, collection } from "firebase/firestore";
 import CircleProgress from "../components/circleprogress";
+import { Link } from "react-router-dom";
 
 export default function Onboarding() {
   const [email, setEmail] = useState("");
@@ -125,84 +126,19 @@ export default function Onboarding() {
           justifyContent: "center",
         }}
       >
-        <TextField
-          type="email"
-          variant="outlined"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          label="Enter your email"
-          fullWidth
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: "white",
-              },
-              "&:hover fieldset": {
-                borderColor: "white",
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: "white",
-              },
-              color: "white",
-            },
-            "& .MuiInputLabel-root": {
-              color: "white",
-              fontFamily: '"Merriweather", serif',
-              fontWeight: "300",
-              fontStyle: "normal",
-            },
-            "& .MuiInputLabel-root.Mui-focused": {
-              color: "white",
-              fontFamily: '"Merriweather", serif',
-              fontWeight: "300",
-              fontStyle: "normal",
-            },
-            "& .MuiOutlinedInput-input": {
-              color: "white",
-            },
-          }}
-          InputLabelProps={{
-            style: { color: "white" },
-          }}
-          InputProps={{
-            style: { color: "white" },
-          }}
-        />
-        <button className="btn" type="submit">
-          Join
-        </button>
-      </motion.div>
-      <br />
-      <motion.div>
-        <div
+        <Link
+          to="/sign-up"
+          className="btn"
+          type="submit"
           style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            lineHeight: "10px",
-            position: "relative",
+            textDecoration: "none",
           }}
         >
-          <Typography fontSize={"40px"}>
-            <CircleProgress value={displayCount} max={200} />
-            {/* Set max as needed */}
-          </Typography>
-          <Typography
-            fontSize={"20px"}
-            sx={{
-              color: "white",
-
-              fontFamily: "'Matemasie', sans-serif",
-              textAlign: "center",
-            }}
-          >
-            🥳 Users have Joined Us!
-            <br />
-            🚀 Hurry Up
-          </Typography>
-        </div>
+          Get Started
+        </Link>
       </motion.div>
+      <br />
+
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
