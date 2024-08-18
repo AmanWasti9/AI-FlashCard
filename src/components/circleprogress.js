@@ -54,7 +54,7 @@ const CircleProgress = ({ value, max, size = 160 }) => {
         alignmentBaseline="middle"
         textAnchor="middle"
         fontSize="40px"
-        fill="white"
+        fill="violet"
       >
         {value}
       </text>

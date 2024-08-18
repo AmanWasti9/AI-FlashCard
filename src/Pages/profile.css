@@ -1,87 +1,102 @@
 .fitCard {
-    width: 300px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin: 10px;
-    font-family: Arial, sans-serif;
-  }
-  
-  .user-header {
+  width: 300px;
+  background-color: black;
+  border-radius: 10px;
+  box-shadow: 0 0 20px violet;
+  padding: 20px;
+  margin: 10px;
+  font-family: Arial, sans-serif;
+}
+
+.user-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.username {
+  font-size: 18px;
+  font-weight: bold;
+  color: violet;
+}
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.steps-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.steps-svg {
+  margin-bottom: 10px;
+}
+
+.steps-text {
+  font-size: 20px;
+  color: violet;
+  font-weight: bold;
+}
+
+.info-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.bpm-container,
+.sleep-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.group {
+  cursor: pointer;
+}
+
+.group-hover-icon {
+  transition: transform 0.3s ease;
+}
+
+.group-hover-text {
+  font-size: 14px;
+  color: white;
+  margin-top: 5px;
+}
+
+.group:hover .group-hover-icon {
+  transform: scale(1.1);
+}
+
+.calories-mood-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.mood-container,
+.calories-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.polo {
+  display: flex;
+  flex-direction: row;
+}
+
+@media (max-width: 599px) {
+  .polo {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-  
-  .username {
-    font-size: 18px;
-    font-weight: bold;
-    color: #B49A18;
-  }
-  
-  .content-container {
-    display: flex;
+
     flex-direction: column;
-    gap: 20px;
   }
-  
-  .steps-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .steps-svg {
-    margin-bottom: 10px;
-  }
-  
-  .steps-text {
-    font-size: 16px;
-    color: #B49A18;
-    font-weight: bold;
-  }
-  
-  .info-container {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-  }
-  
-  .bpm-container, .sleep-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .group {
-    cursor: pointer;
-  }
-  
-  .group-hover-icon {
-    transition: transform 0.3s ease;
-  }
-  
-  .group-hover-text {
-    font-size: 14px;
-    color: #333;
-    margin-top: 5px;
-  }
-  
-  .group:hover .group-hover-icon {
-    transform: scale(1.1);
-  }
-  
-  .calories-mood-container {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-top: 20px;
-  }
-  
-  .mood-container, .calories-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+}
