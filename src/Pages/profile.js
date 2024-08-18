@@ -21,6 +21,7 @@ import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { GetLeaderboard, GetUserRank } from "../components/leaderboard"; // Updated import
 import RankTable from "../components/rankTable"; // Correct import
 import CheckIcon from "@mui/icons-material/Check";
+import CreateIcon from "@mui/icons-material/Create";
 
 const UserProfile = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -217,20 +218,20 @@ const UserProfile = () => {
                   d="M24 44c11.046 0 20-8.954 20-20S35.046 4 24 4 4 12.954 4 24s8.954 20 20 20Z"
                   stroke-width="3"
                   stroke-linecap="round"
-                  stroke="#B49A18"
+                  stroke="violet"
                 ></path>
                 <path
                   d="M18.804 27a5.999 5.999 0 0 0 10.392 0"
                   stroke-width="3"
                   stroke-linecap="round"
-                  stroke="#B49A18"
+                  stroke="violet"
                 ></path>
                 <path
                   d="M18 15.75h-2a2.25 2.25 0 0 0 0 4.5h2a2.25 2.25 0 0 0 0-4.5Zm14 0h-2a2.25 2.25 0 0 0 0 4.5h2a2.25 2.25 0 0 0 0-4.5Z"
                   stroke-width=".25"
                   stroke-linecap="round"
-                  stroke="#B49A18"
-                  fill="#B49A18"
+                  stroke="violet"
+                  fill="violet"
                 ></path>
               </svg>
             </div>
@@ -238,7 +239,7 @@ const UserProfile = () => {
           </div>
           <div className="calories-container group">
             <div className="group-hover-icon" onClick={handleOpen}>
-              <EmojiEventsIcon
+              <CreateIcon
                 sx={{
                   color: "violet",
                   fontSize: "50px",
