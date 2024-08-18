@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Card } from '@mui/material';
+import { Card } from '@mui/material'; // Corrected the import path
 import { IconButton } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import ReplayIcon from '@mui/icons-material/Replay';
