@@ -338,7 +338,7 @@ export default function Dashboard() {
           onClick={handleClick}
           style={{
             position: "fixed",
-            bottom: 16,
+            bottom: 32,
             right: 26,
             borderRadius: "50%",
             width: "100px",
