@@ -29,6 +29,7 @@ import {
 } from "@google/generative-ai";
 import { getDoc, updateDoc, doc, collection, setDoc } from "firebase/firestore";
 import { firestore } from "../firebase";
+import PdfTextExtractor from "./pdf-reader";
 
 export default function Dashboard() {
   const auth = getAuth(); // Initialize Firebase Auth
@@ -338,8 +339,8 @@ export default function Dashboard() {
           onClick={handleClick}
           style={{
             position: "fixed",
-            bottom: 50,
-            right: 26,
+            bottom: 15,
+            left: 26,
             borderRadius: "50%",
             width: "100px",
             height: "100px",
@@ -371,6 +372,7 @@ export default function Dashboard() {
           <Route path="flashcards" element={<Flashcards />} />
           <Route path="flashcard/:id" element={<Flashcard />} />
           <Route path="game" element={<Cards />} />
+          <Route path="pdf" element={<PdfTextExtractor />} />
         </Routes>
 
         <Popover

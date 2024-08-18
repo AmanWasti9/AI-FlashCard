@@ -253,12 +253,13 @@ export default function GenerateCard() {
         <PointsCounter pointss={points} />
       </Typography>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={12}>
+        <Grid item xs={12} md={4}>
           <div
             style={{
               padding: "20px",
               display: "flex",
               flexDirection: "column",
+              justifyContent: "center",
               gap: "10px",
             }}
           >
@@ -269,9 +270,49 @@ export default function GenerateCard() {
             >
               Generate New Cards
             </h3>
+            <br />
+            <Button
+              component="label"
+              role={undefined}
+              variant="contained"
+              tabIndex={-1}
+              startIcon={
+                <CloudUploadIcon
+                  style={{
+                    fontSize: "50px",
+                  }}
+                />
+              }
+              sx={{
+                backgroundColor: "#000",
+                color: "white",
+                boxShadow: "0 0 10px rgba(148, 0, 211, 0.7)", // Purple color with a high opacity
+                border: "2px solid rgba(148, 0, 211, 0.5)", // Purple border with a slightly lower opacity
+                backgroundImage:
+                  "linear-gradient(145deg, rgba(75, 0, 130, 0.5), rgba(148, 0, 211, 0.8))", // Gradient from dark violet to purple
+                backgroundClip: "padding-box",
+                fontSize: "30px",
+                padding: "30px",
+                borderRadius: "20px",
+                "&:hover": {
+                  backgroundColor: "purple",
+                },
+              }}
+            >
+              Upload file
+              <VisuallyHiddenInput type="file" />
+            </Button>
 
             <br />
-
+            <h3
+              style={{
+                color: "white",
+                textAlign: "center",
+              }}
+            >
+              OR
+            </h3>
+            <br />
             <TextField
               type="text"
               fullWidth
@@ -296,13 +337,13 @@ export default function GenerateCard() {
               sx={{
                 "& .MuiOutlinedInput-root": {
                   "& fieldset": {
-                    borderColor: "white",
+                    borderColor: "indigo", // Gradient from dark violet to purple
                   },
                   "&:hover fieldset": {
-                    borderColor: "white",
+                    borderColor: "indigo", // Gradient from dark violet to purple
                   },
                   "&.Mui-focused fieldset": {
-                    borderColor: "white",
+                    borderColor: "indigo",
                   },
                   color: "white",
                 },
@@ -319,7 +360,7 @@ export default function GenerateCard() {
             />
           </div>
         </Grid>
-        <Grid item xs={12} md={12}>
+        <Grid item xs={12} md={8}>
           <div
             style={{
               padding: "20px",
@@ -386,9 +427,14 @@ export default function GenerateCard() {
                                 flexDirection: "column",
                                 justifyContent: "center",
                                 alignItems: "center",
-                                background:
-                                  "linear-gradient(130deg, purple, violet, #F98CB9 )",
+                                // background:
+                                //   "linear-gradient(130deg, purple, violet, #F98CB9 )",
                                 color: "white",
+                                // boxShadow: "0 0 10px rgba(148, 0, 211, 0.7)", // Purple color with a high opacity
+                                border: "2px solid rgba(148, 0, 211, 0.5)", // Purple border with a slightly lower opacity
+                                backgroundImage:
+                                  "linear-gradient(145deg, rgba(75, 0, 130, 0.5), rgba(148, 0, 211, 0.8))", // Gradient from dark violet to purple
+
                                 boxSizing: "border-box",
                                 borderRadius: "8px",
                                 padding: "15px",
@@ -445,8 +491,8 @@ export default function GenerateCard() {
                                 display: "flex",
                                 justifyContent: "center",
                                 alignItems: "center",
-                                background:
-                                  "linear-gradient(130deg, purple, violet, #F98CB9 )",
+                                backgroundImage:
+                                  "linear-gradient(145deg, rgba(148, 0, 211, 0.8),  rgba(75, 0, 130, 0.5))", // Gradient from dark violet to purple
                                 color: "white",
                                 boxSizing: "border-box",
                                 borderRadius: "8px",
