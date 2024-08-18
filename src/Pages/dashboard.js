@@ -1,10 +1,11 @@
 import React from "react";
-import { Box, Button, Container } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import Navigation from "../components/navigation";
 import GenerateCard from "./generateCard";
 import Profile from "./profile";
 import Flashcards from "./flashcards";
+import PointsCounter from "../components/timers"; // Import the PointsCounter component
 import Flashcard from "./flashcard";
 import Cards from "../components/Cards";
 import { getAuth } from "firebase/auth";
@@ -16,15 +17,14 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   const handleLogOut = async () => {
-    // console.log("Logout button clicked"); // Add this line to check if the function is being called
     try {
       await auth.signOut();
-      // console.log("User logged out successfully");
       navigate("/login");
     } catch (error) {
       console.error("Error signing out:", error.message);
     }
   };
+
   return (
     <Box
       sx={{
@@ -38,23 +38,37 @@ export default function Dashboard() {
         boxShadow: "0 8px 32px 0 rgba(0,0,0,0.37)",
       }}
     >
-      <Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "1rem",
+        }}
+      >
         <Button
           variant="standard"
           onClick={handleLogOut}
           sx={{
             color: "white",
+            display: "flex",
+            alignItems: "center",
           }}
         >
           <TbLogout2
             style={{
               fontSize: "2.5rem",
               color: "white",
+              marginRight: "0.5rem",
             }}
           />
           LogOut
         </Button>
+
+        {/* Add the PointsCounter timer component here */}
+        <PointsCounter />
       </Box>
+
       <Box
         sx={{
           padding: "50px",
