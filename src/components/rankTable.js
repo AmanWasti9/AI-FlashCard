@@ -118,7 +118,8 @@ export default function RankTable() {
         </thead>
         <tbody>
           {leaderboard
-            .sort((a, b) => b.score - a.score) // Sort by score in descending order
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 10)
             .map((entry, index) => (
               <tr
                 key={index}
