@@ -332,12 +332,13 @@ export default function GenerateCard() {
         responseMimeType: "text/plain",
       };
 
-      const prompt = `Create 10 flashcards with questions and three options based on this PDF text: ${text}. The format should be:\n\n" +
-      "Question: [question here]\n" +
-      "a) [option 1]\n" +
-      "b) [option 2]\n" +
-      "c) [option 3]\n" +
-    "Answer: [correct option letter and option text, e.g., 'b) Option 2']"`;
+      const prompt =
+        `Create 10 flashcards with questions and three options based on this PDF text: ${text}. The format should be:\n\n` +
+        `Question: [question here]\n` +
+        `a) [option 1]\n` +
+        `b) [option 2]\n` +
+        `c) [option 3]\n` +
+        `Answer: [correct option letter and option text, e.g., 'b) Option 2']`;
 
       const response = await model.generateContent(prompt, generationConfig);
 
@@ -360,6 +361,11 @@ export default function GenerateCard() {
             optionCMatch &&
             answerMatch
           ) {
+            const correctOptionKey = answerMatch[1].trim().charAt(0); // Extract the option letter (e.g., 'b')
+            const correctOptionText = flashcard
+              .match(new RegExp(`${correctOptionKey}\\)\\s*(.*)`, "i"))[1]
+              .trim(); // Extract the corresponding option text
+
             acc.push({
               id: index + 1,
               question: questionMatch[1].trim(),
@@ -368,7 +374,7 @@ export default function GenerateCard() {
                 b: optionBMatch[1].trim(),
                 c: optionCMatch[1].trim(),
               },
-              answer: answerMatch[1].trim(),
+              answer: `${correctOptionKey}) ${correctOptionText}`, // Combine the option letter with its text
             });
           }
 
