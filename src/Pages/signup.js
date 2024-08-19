@@ -294,6 +294,16 @@ export default function SignUp() {
                   style: { color: "white" }, // Input text color
                 }}
               />
+              <Typography
+                variant="body2"
+                sx={{
+                  marginTop: "-5px",
+                  textAlign: "left",
+                  width: "100%", // Ensure the width is full to apply the alignment properly
+                }}
+              >
+                Password must be at least 6 characters long
+              </Typography>
               <Button
                 variant="contained"
                 type="submit"
