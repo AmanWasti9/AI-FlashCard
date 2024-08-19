@@ -79,6 +79,9 @@ const CustomButton = styled(Button)(({ theme }) => ({
     backgroundColor: "white",
   },
 }));
+// const Alert = React.forwardRef(function Alert(props, ref) {
+//   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+// });
 
 export default function GenerateCard() {
   const [inputValue, setInputValue] = useState("");
@@ -101,6 +104,22 @@ export default function GenerateCard() {
 
   const [pdfText, setPdfText] = useState("");
   // const [flashcardpdf, setFlashcardpdf] = useState("");
+  // const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  // const handleFileChange = (event) => {
+  //   const file = event.target.files[0];
+  //   if (file && file.type !== "application/pdf") {
+  //     // Show snackbar if the file format is not PDF
+  //   setSnackbarOpen(true);
+  // } else {
+  //   // Handle valid PDF file upload here
+  //   console.log("PDF file uploaded:", file);
+  // }
+  // };
+
+  // const handleSnackbarClose = () => {
+  //   setSnackbarOpen(false);
+  // };
 
   useEffect(() => {
     if (user) {
@@ -268,7 +287,7 @@ export default function GenerateCard() {
 
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
-    if (file) {
+    if (file && file.type === "application/pdf") {
       const fileReader = new FileReader();
       fileReader.onload = async function () {
         const typedArray = new Uint8Array(this.result);
@@ -284,6 +303,13 @@ export default function GenerateCard() {
         await generateFlashcards(extractedText); // Call flashcard generation after text extraction
       };
       fileReader.readAsArrayBuffer(file);
+    } else {
+      setTimeout(() => {
+        setSnackbarOpen(true);
+        setSnackbarMessage("Invalid Format. It should accept only PDF format");
+      }, 0);
+      // Handle valid PDF file upload here
+      console.log("PDF file uploaded:", file);
     }
   };
 
@@ -311,7 +337,7 @@ export default function GenerateCard() {
       "a) [option 1]\n" +
       "b) [option 2]\n" +
       "c) [option 3]\n" +
-      "Answer: [correct answer here, do not include "a)", "b)", or "c)"]`;
+      "Answer: [correct answer here, without option letters] (Choose from the options a, b, or c)"`;
       const response = await model.generateContent(prompt, generationConfig);
 
       const rawText =
@@ -387,18 +413,10 @@ export default function GenerateCard() {
                 color: "white",
               }}
             >
-              Generate New Cards
+              Generate new cards from
             </h3>
             <br />
-            <h5
-              style={{
-                color: "white",
-              }}
-            >
-              Accepted file type: PDF only.
-              <br />
-              Output is dependent on PDF format.
-            </h5>
+
             <Button
               component="label"
               role={undefined}
@@ -421,15 +439,15 @@ export default function GenerateCard() {
                   "linear-gradient(145deg, rgba(75, 0, 130, 0.5), rgba(148, 0, 211, 0.8))",
                 backgroundClip: "padding-box",
                 fontSize: "30px",
-                padding: "30px",
+                padding: "25px",
                 borderRadius: "20px",
                 "&:hover": {
                   backgroundColor: "purple",
                 },
               }}
             >
-              Upload file
-              <VisuallyHiddenInput type="file" />
+              Upload PDF
+              <VisuallyHiddenInput type="file" accept=".pdf" />
             </Button>
 
             <br />
@@ -495,14 +513,6 @@ export default function GenerateCard() {
               padding: "20px",
             }}
           >
-            <h3
-              style={{
-                color: "white",
-              }}
-            >
-              Generated Flashcards:
-            </h3>
-
             {loading ? (
               <Box
                 sx={{
@@ -659,10 +669,16 @@ export default function GenerateCard() {
                         mt: 4,
                         width: "150px",
                         padding: "10px",
-                        bgcolor: "purple",
+                        border: "2px solid rgba(148, 0, 211, 0.5)", // Purple border with a slightly lower opacity
+
+                        backgroundImage:
+                          "linear-gradient(145deg, rgba(75, 0, 130, 0.5), rgba(148, 0, 211, 0.8))", // Gradient from dark violet to purple
                         color: "white",
                         "&:hover": {
-                          bgcolor: "violet",
+                          border: "2px solid rgba(148, 0, 211, 0.5)", // Purple border with a slightly lower opacity
+
+                          backgroundImage:
+                            "linear-gradient(145deg, rgba(75, 0, 130, 0.5), rgba(148, 0, 211, 0.8))", // Gradient from dark violet to purple
                         },
                         "&:disabled": {
                           bgcolor: "gray",
@@ -673,10 +689,29 @@ export default function GenerateCard() {
                       Save
                     </Button>
                   </Box>
-                  <Dialog open={open} onClose={handleClose}>
-                    <DialogTitle>Save Flashcards</DialogTitle>
+                  <Dialog
+                    open={open}
+                    onClose={handleClose}
+                    PaperProps={{
+                      style: {
+                        backgroundColor: "black", // Set the background color to transparent
+                        boxShadow: "none", // Optional: remove the default box shadow
+                      },
+                    }}
+                  >
+                    <DialogTitle
+                      sx={{
+                        color: "white",
+                      }}
+                    >
+                      Save Flashcards
+                    </DialogTitle>
                     <DialogContent>
-                      <DialogContentText>
+                      <DialogContentText
+                        sx={{
+                          color: "white",
+                        }}
+                      >
                         Please enter a collection name for your flashcards.
                       </DialogContentText>
                       <TextField
@@ -688,17 +723,56 @@ export default function GenerateCard() {
                         fullWidth
                         value={name}
                         onChange={(e) => setName(e.target.value)}
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            "& fieldset": {
+                              borderColor: "indigo", // Gradient from dark violet to purple
+                            },
+                            "&:hover fieldset": {
+                              borderColor: "indigo", // Gradient from dark violet to purple
+                            },
+                            "&.Mui-focused fieldset": {
+                              borderColor: "indigo",
+                            },
+                            color: "white",
+                          },
+                          "& .MuiInputLabel-root": {
+                            color: "white",
+                          },
+                          "& .MuiInputLabel-root.Mui-focused": {
+                            color: "white",
+                          },
+                        }}
+                        InputLabelProps={{
+                          style: { color: "white" }, // Label color
+                        }}
                       />
                     </DialogContent>
                     <DialogActions>
-                      <Button onClick={handleClose}>Cancel</Button>
-                      <Button onClick={saveFlashcards}>Save</Button>
+                      <Button
+                        onClick={handleClose}
+                        sx={{
+                          backgroundColor: "white",
+                          color: "indigo",
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={saveFlashcards}
+                        sx={{
+                          backgroundColor: "indigo",
+                          color: "white",
+                        }}
+                      >
+                        Save
+                      </Button>
                     </DialogActions>
                   </Dialog>
                   <Snackbar
                     open={snackbarOpen}
-                    autoHideDuration={3000}
-                    onClose={handleSnackbarClose}
+                    autoHideDuration={6000}
+                    onClose={() => setSnackbarOpen(false)}
                     message={snackbarMessage}
                   />
                 </Box>

@@ -111,8 +111,8 @@ export default function SignUp() {
           padding: 2,
           "& > :not(style)": {
             width: {
-              xs: "80vw",
-              md: "25vw",
+              xs: "90vw",
+              md: "35vw",
             },
             p: 5,
           },
@@ -338,9 +338,9 @@ export default function SignUp() {
                 fullWidth
                 sx={{
                   background: "transparent",
+                  display: "flex",
                   borderRadius: "20px",
                   height: "7vh",
-                  display: "flex",
                   gap: "20px",
                   border: "2px solid purple",
                   color: "white", // Text color
@@ -358,12 +358,12 @@ export default function SignUp() {
                     alt=""
                     width={35}
                     height={35}
-                    style={{
-                      objectFit: "contain",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "start",
-                    }}
+                    // style={{
+                    //   objectFit: "contain",
+                    //   display: "flex",
+                    //   alignItems: "center",
+                    //   justifyContent: "start",
+                    // }}
                   />
                 </span>
                 <span>Continue With Google</span>

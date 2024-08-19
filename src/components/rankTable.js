@@ -38,8 +38,10 @@ export default function RankTable() {
     background: "linear-gradient(to right, #1a1a1a, #000000, #1a1a1a)",
     boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.5)",
     borderRadius: "20px",
-    width: "100%",
-    maxWidth: "800px",
+    width: "95%",
+    maxWidth: "720px",
+    zIndex: "3",
+    position: "relative",
   };
 
   const titleStyle = {
@@ -54,13 +56,13 @@ export default function RankTable() {
   };
 
   const tableStyle = {
-    width: "100%",
+    width: "95%",
     textAlign: "left",
     borderCollapse: "collapse",
   };
 
   const thStyle = {
-    padding: "1rem",
+    padding: "0.5rem",
     textTransform: "uppercase",
     color: "#888",
     borderBottom: "1px solid #444",

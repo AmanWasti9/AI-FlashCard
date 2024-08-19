@@ -59,13 +59,19 @@ export default function Flashcards() {
             <Grid item xs={12} sm={6} md={4} key={index}>
               <Card
                 sx={{
-                  background:
-                    "linear-gradient(130deg, purple, violet, #f98cb9)",
+                  backgroundColor: "#000",
+                  color: "white",
+                  boxShadow: "0 0 10px rgba(148, 0, 211, 0.7)",
+                  border: "2px solid rgba(148, 0, 211, 0.5)",
+                  backgroundImage:
+                    "linear-gradient(145deg, rgba(75, 0, 130, 0.5), rgba(148, 0, 211, 0.8))",
+                  backgroundClip: "padding-box",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
                   height: "100px",
                   textAlign: "center",
+                  borderRadius: "12px",
                 }}
               >
                 <CardActionArea onClick={() => handleCardClick(flashcard.name)}>

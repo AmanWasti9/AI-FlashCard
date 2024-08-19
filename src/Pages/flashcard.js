@@ -111,9 +111,14 @@ export default function Flashcard() {
                     flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "center",
-                    background:
-                      "linear-gradient(130deg, purple, violet, #F98CB9)",
+                    backgroundColor: "#000",
                     color: "white",
+                    boxShadow: "0 0 10px rgba(148, 0, 211, 0.7)",
+                    border: "2px solid rgba(148, 0, 211, 0.5)",
+                    backgroundImage:
+                      "linear-gradient(145deg, rgba(75, 0, 130, 0.5), rgba(148, 0, 211, 0.8))",
+                    backgroundClip: "padding-box",
+
                     boxSizing: "border-box",
                     borderRadius: "8px",
                     padding: "15px",
@@ -175,9 +180,13 @@ export default function Flashcard() {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    background:
-                      "linear-gradient(130deg, #F98CB9, violet,purple)",
+                    backgroundColor: "#000",
                     color: "white",
+                    boxShadow: "0 0 10px rgba(148, 0, 211, 0.7)",
+                    border: "2px solid rgba(148, 0, 211, 0.5)",
+                    backgroundImage:
+                      "linear-gradient(145deg, rgba(75, 0, 130, 0.5), rgba(148, 0, 211, 0.8))",
+                    backgroundClip: "padding-box",
                     padding: 2,
                     boxSizing: "border-box",
                     borderRadius: "8px",
