@@ -276,9 +276,10 @@ export default function GenerateCard() {
       if (docSnap.exists()) {
         const userData = docSnap.data();
         const username = `${userData.firstName} ${userData.lastName}`;
-        const points = `${userPoints.data().totalPoints}`;
+        const totalpoints = `${userPoints.data().totalPoints}`;
+        const gamepoints = `${userPoints.data().gamePoints}`;
 
-        leader.AddUserInLeaderboard(username, points, user);
+        leader.AddUserInLeaderboard(username, totalpoints, gamepoints, user);
       }
     } catch (error) {
       console.log("No such document!");

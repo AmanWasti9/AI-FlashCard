@@ -27,7 +27,11 @@ import {
 } from "firebase/firestore";
 import CircleProgress from "../components/circleprogress";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import { GetLeaderboard, GetUserRank } from "../components/leaderboard"; // Updated import
+import {
+  AddUserInLeaderboard,
+  GetLeaderboard,
+  GetUserRank,
+} from "../components/leaderboard"; // Updated import
 import RankTable from "../components/rankTable"; // Correct import
 import CheckIcon from "@mui/icons-material/Check";
 import CreateIcon from "@mui/icons-material/Create";
@@ -49,6 +53,26 @@ const UserProfile = () => {
   const [last, setLast] = useState("");
   const [leaderboard, setLeaderboard] = useState([]);
   const [username, setUsername] = useState("");
+  useEffect(() => {
+    const updateLeaderboard = async () => {
+      if (user) {
+        try {
+          const userDocRef = doc(firestore, "Users", user.uid);
+          const userDocSnap = await getDoc(userDocRef);
+
+          if (userDocSnap.exists()) {
+            const userData = userDocSnap.data();
+            const username = `${userData.firstName} ${userData.lastName}`;
+            await AddUserInLeaderboard(username, user); // No need to pass totalPoints and gamePoints here
+          }
+        } catch (error) {
+          console.error("Error updating leaderboard:", error);
+        }
+      }
+    };
+
+    updateLeaderboard();
+  }, [user, firestore]);
 
   useEffect(() => {
     if (user) {

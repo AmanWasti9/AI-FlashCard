@@ -9,6 +9,7 @@ import {
   updateDoc,
   where,
   limit,
+  getDoc,
 } from "firebase/firestore";
 import { firestore } from "../firebase";
 
@@ -22,28 +23,69 @@ const IsUsernameExist = async (username) => {
   return querySnapshot.size > 0;
 };
 
-const AddUserInLeaderboard = async (
-  username,
-  totalPoints,
-  gamePoints,
-  user
-) => {
-  const combinedPoints = Number(totalPoints) + Number(gamePoints);
+// const AddUserInLeaderboard = async (
+//   username,
+//   totalPoints,
+//   gamePoints,
+//   user
+// ) => {
+//   const combinedPoints = Number(totalPoints) + Number(gamePoints);
+
+//   try {
+//     const isUsernameExist = await IsUsernameExist(username);
+//     const docRef = doc(firestore, "leaderboard", user.uid);
+
+//     if (isUsernameExist) {
+//       await updateDoc(docRef, { score: combinedPoints });
+//     } else {
+//       // Create a document with the user.uid as the document ID
+//       await setDoc(docRef, {
+//         username: username,
+//         score: combinedPoints,
+//       });
+//     }
+//     return true;
+//   } catch (e) {
+//     console.error("Error adding or updating document: ", e);
+//     return false;
+//   }
+// };
+
+const AddUserInLeaderboard = async (username, user) => {
+  const pointsDocRef = doc(firestore, "points", user.uid);
 
   try {
-    const isUsernameExist = await IsUsernameExist(username);
-    const docRef = doc(firestore, "leaderboard", user.uid);
+    const pointsDocSnap = await getDoc(pointsDocRef);
 
-    if (isUsernameExist) {
-      await updateDoc(docRef, { score: combinedPoints });
+    if (pointsDocSnap.exists()) {
+      const data = pointsDocSnap.data();
+      const totalPoints = data.totalPoints || 0;
+      const gamePoints = data.gamePoints || 0;
+      const combinedPoints = Number(totalPoints) + Number(gamePoints);
+
+      const docRef = doc(firestore, "leaderboard", user.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        // Document exists, compare and update the score if new score is greater
+        const existingData = docSnap.data();
+        const existingScore = existingData.score || 0;
+
+        if (combinedPoints > existingScore) {
+          await updateDoc(docRef, { score: combinedPoints });
+        }
+      } else {
+        // Document does not exist, create a new one
+        await setDoc(docRef, {
+          username: username,
+          score: combinedPoints,
+        });
+      }
+      return true;
     } else {
-      // Create a document with the user.uid as the document ID
-      await setDoc(docRef, {
-        username: username,
-        score: combinedPoints,
-      });
+      console.error("Points document does not exist.");
+      return false;
     }
-    return true;
   } catch (e) {
     console.error("Error adding or updating document: ", e);
     return false;
