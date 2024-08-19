@@ -402,7 +402,11 @@ export default function Dashboard() {
             color: "white",
           }}
         >
-          <MdFeedback />
+          <MdFeedback
+            style={{
+              fontSize: "50px",
+            }}
+          />
         </Button>
       </Box>
       <Box
@@ -594,7 +598,14 @@ export default function Dashboard() {
             <form className="form" onSubmit={handleSubmitFeedback}>
               <div className="form-group">
                 <label for="email">Your Name</label>
-                <input type="text" id="email" name="email" required="" />
+                <input
+                  type="text"
+                  id="email"
+                  name="email"
+                  required=""
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
               </div>
               <div className="form-group">
                 <label for="textarea">How can we improve?</label>
@@ -604,6 +615,8 @@ export default function Dashboard() {
                   rows="10"
                   cols="50"
                   required=""
+                  value={feedback}
+                  onChange={(e) => setFeedback(e.target.value)}
                 >
                   {" "}
                 </textarea>

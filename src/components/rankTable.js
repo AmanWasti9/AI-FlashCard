@@ -2,32 +2,36 @@ import { Avatar } from "@mui/material";
 import { getAuth } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { GetLeaderboard } from "./leaderboard";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { firestore } from "../firebase";
+import {
+  AddUserInLeaderboard,
+  GetLeaderboard,
+  GetUserRank,
+} from "./leaderboard";
 
 export default function RankTable() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
   const auth = getAuth();
   const user = auth.currentUser;
-  const [userFirstName, setUserFirstName] = useState("");
-  const [points, setPoints] = useState(0);
-  const [correctedQuestion, setCorrectedQuestion] = useState(0);
-
   const [userRank, setUserRank] = useState(null); // State for storing the user's rank
-
   const [leaderboard, setLeaderboard] = useState([]);
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
-      const data = await GetLeaderboard();
-      console.log(data); // Log the entire data array to check its structure
-      setLeaderboard(data);
+      try {
+        const data = await GetLeaderboard();
+        setLeaderboard(data);
+      } catch (error) {
+        console.error("Error fetching leaderboard: ", error);
+      }
     };
 
     fetchLeaderboard();
   }, []);
 
+  // Styling and rendering code remains unchanged...
   const containerStyle = {
     margin: "0 auto",
     padding: "2rem",
@@ -117,7 +121,7 @@ export default function RankTable() {
             .sort((a, b) => b.score - a.score) // Sort by score in descending order
             .map((entry, index) => (
               <tr
-                key={index} // Use index or a unique identifier if available
+                key={index}
                 style={{ ...trStyle, animationDelay: `${index * 0.1}s` }}
                 onMouseEnter={(e) =>
                   (e.currentTarget.style.background =
@@ -136,9 +140,7 @@ export default function RankTable() {
                     onMouseEnter={(e) =>
                       (e.currentTarget.style = avatarHoverStyle)
                     }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style = avatarStyle)
-                    }
+                    onMouseLeave={(e) => (e.currentTarget.style = avatarStyle)}
                     sx={{
                       bgcolor: "violet",
                       border: "2px solid violet",
@@ -147,7 +149,7 @@ export default function RankTable() {
                       marginRight: "10px",
                     }}
                   >
-                    {entry.username.charAt(0).toUpperCase()}
+                    {(entry.username || "A").charAt(0).toUpperCase()}
                   </Avatar>
                   <span style={{ color: "white" }}>{entry.username}</span>
                 </td>

@@ -1,101 +1,91 @@
-import { initializeApp } from "firebase/app";
 import {
   doc,
   setDoc,
   addDoc,
   collection,
   getDocs,
-  getFirestore,
-  limit,
   orderBy,
   query,
   updateDoc,
   where,
+  limit,
 } from "firebase/firestore";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCg2kp7_Ircxn0gDLqxZeXvMqBr7nkzekM",
-  authDomain: "ai-flashcards-fe531.firebaseapp.com",
-  projectId: "ai-flashcards-fe531",
-  storageBucket: "ai-flashcards-fe531.appspot.com",
-  messagingSenderId: "674893612675",
-  appId: "1:674893612675:web:3d305e84f061d37fa73db6",
-  measurementId: "G-G585T68TM5",
-};
-const app = initializeApp(firebaseConfig);
+import { firestore } from "../firebase";
 
 const IsUsernameExist = async (username) => {
-  const db = getFirestore(app);
   const querySnapshot = await getDocs(
-    query(collection(db, "leaderboard"), where("username", "==", username))
+    query(
+      collection(firestore, "leaderboard"),
+      where("username", "==", username)
+    )
   );
   return querySnapshot.size > 0;
 };
 
-const AddUserInLeaderboard = async (username, score, user) => {
-  const db = getFirestore(app);
+const AddUserInLeaderboard = async (
+  username,
+  totalPoints,
+  gamePoints,
+  user
+) => {
+  const combinedPoints = Number(totalPoints) + Number(gamePoints);
 
   try {
     const isUsernameExist = await IsUsernameExist(username);
-    const docRef = doc(db, "leaderboard", user.uid);
+    const docRef = doc(firestore, "leaderboard", user.uid);
 
     if (isUsernameExist) {
-      const querySnapshot = await getDocs(
-        query(collection(db, "leaderboard"), where("username", "==", username))
-      );
-      for (const docSnapshot of querySnapshot.docs) {
-        await updateDoc(docRef, { score: score });
-      }
-      return true;
+      await updateDoc(docRef, { score: combinedPoints });
+    } else {
+      // Create a document with the user.uid as the document ID
+      await setDoc(docRef, {
+        username: username,
+        score: combinedPoints,
+      });
     }
-
-    // Create a document with the user.uid as the document ID
-    await setDoc(docRef, {
-      username: username,
-      score: score,
-    });
     return true;
   } catch (e) {
     console.error("Error adding or updating document: ", e);
+    return false;
   }
-
-  return false;
 };
 
 const GetLeaderboard = async () => {
-  const db = getFirestore(app);
-  const querySnapshot = await getDocs(
-    query(collection(db, "leaderboard"), orderBy("score", "desc"), limit(10))
-  );
-  let leaderboard = [];
-  querySnapshot.forEach((doc) => {
-    leaderboard.push(doc.data());
-  });
-  return leaderboard;
+  try {
+    const querySnapshot = await getDocs(
+      query(
+        collection(firestore, "leaderboard"),
+        orderBy("score", "desc") // Ensure this is sorting by score in descending order
+      )
+    );
+
+    return querySnapshot.docs.map((doc) => ({
+      id: doc.id, // This is the document name (ID)
+      ...doc.data(), // This spreads the document data
+    }));
+  } catch (error) {
+    console.error("Error fetching leaderboard: ", error);
+    return [];
+  }
 };
 
-const GetUserRank = async (uid) => {
-  const db = getFirestore(app);
-  const leaderboardQuery = query(
-    collection(db, "leaderboard"),
-    orderBy("score", "desc") // Order by score in descending order
-  );
-  const querySnapshot = await getDocs(leaderboardQuery);
+const GetUserRank = async (userId) => {
+  try {
+    const leaderboard = await GetLeaderboard(); // Ensure this is up-to-date
+    const sortedLeaderboard = leaderboard
+      .map((entry) => ({ ...entry, score: Number(entry.score) })) // Convert scores to numbers
+      .sort((a, b) => b.score - a.score); // Sort by score in descending order
 
-  let rank = 1;
-  let userRank = null;
-  let userScore = null;
-
-  querySnapshot.forEach((doc) => {
-    const data = doc.data();
-    if (doc.id === uid) {
-      userScore = data.score;
-      userRank = rank; // Set the rank when the user's score is found
-    }
-    rank++;
-  });
-
-  return userRank;
+    // Find the user's rank
+    const userIndex = sortedLeaderboard.findIndex(
+      (entry) => entry.id === userId // Ensure this matches how userId is stored in leaderboard
+    );
+    // Return rank (index + 1 for 1-based ranking), or null if not found
+    return userIndex !== -1 ? userIndex + 1 : null;
+  } catch (error) {
+    console.error("Error fetching user rank: ", error);
+    return null;
+  }
 };
 
 export { AddUserInLeaderboard, GetLeaderboard, IsUsernameExist, GetUserRank };

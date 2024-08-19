@@ -15,7 +15,16 @@ import {
 import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { firestore } from "../firebase";
-import { doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  onSnapshot,
+  orderBy,
+  query,
+  updateDoc,
+} from "firebase/firestore";
 import CircleProgress from "../components/circleprogress";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { GetLeaderboard, GetUserRank } from "../components/leaderboard"; // Updated import
@@ -51,6 +60,23 @@ const UserProfile = () => {
 
       fetchUserRank();
 
+      const fetchPoints = async () => {
+        try {
+          const leaderboard = await GetLeaderboard(user.uid);
+          const userEntry = leaderboard.find((entry) => entry.id === user.uid);
+          if (userEntry) {
+            setPoints(userEntry.score);
+            console.log(userEntry.score);
+          } else {
+            console.log("User not found in the leaderboard.");
+          }
+        } catch (error) {
+          console.error("Error fetching leaderboard:", error);
+        }
+      };
+
+      fetchPoints();
+
       const userDocRef = doc(firestore, "Users", user.uid);
       getDoc(userDocRef).then((docSnap) => {
         if (docSnap.exists()) {
@@ -65,7 +91,6 @@ const UserProfile = () => {
       const unsubscribe = onSnapshot(pointsDocRef, (doc) => {
         if (doc.exists()) {
           const data = doc.data();
-          setPoints(data.totalPoints || 0);
 
           const correctQuestionsLength = data.correctQuestions
             ? data.correctQuestions.length
@@ -78,7 +103,7 @@ const UserProfile = () => {
         }
       });
 
-      return () => unsubscribe(); // Clean up the subscription
+      return () => unsubscribe();
     }
   }, [user]);
 
@@ -111,8 +136,20 @@ const UserProfile = () => {
       setUserFirstName(capitalizeFirstLetter(first));
       setUsername(first + " " + last);
 
-      // Fetch the updated leaderboard after name change
-      const updatedLeaderboard = await GetLeaderboard();
+      // // Fetch the updated leaderboard after name change
+      // const updatedLeaderboard = await GetLeaderboard();
+      // setLeaderboard(updatedLeaderboard); // Update leaderboard with new data
+
+      // Fetch and sort the leaderboard based on the score
+      const leaderboardRef = collection(firestore, "leaderboard");
+      const q = query(leaderboardRef, orderBy("score", "desc"));
+      const querySnapshot = await getDocs(q);
+
+      const updatedLeaderboard = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
       setLeaderboard(updatedLeaderboard); // Update leaderboard with new data
 
       handleClose(); // Close the dialog after successful update
@@ -162,7 +199,7 @@ const UserProfile = () => {
             }}
           >
             <Typography fontSize={"40px"}>
-              <CircleProgress value={points} max={100} />
+              <CircleProgress value={points} max={1000} />
             </Typography>
             <Typography
               fontSize={"20px"}

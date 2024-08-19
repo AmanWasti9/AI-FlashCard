@@ -390,6 +390,15 @@ export default function GenerateCard() {
               Generate New Cards
             </h3>
             <br />
+            <h5
+              style={{
+                color: "white",
+              }}
+            >
+              Accepted file type: PDF only.
+              <br />
+              Output is dependent on PDF format.
+            </h5>
             <Button
               component="label"
               role={undefined}
