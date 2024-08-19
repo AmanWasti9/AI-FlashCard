@@ -20,7 +20,7 @@ export const PromptService = async (inputValue) => {
       "a) [option 1]\n" +
       "b) [option 2]\n" +
       "c) [option 3]\n" +
-      "Answer: [correct answer here, without option letters] (Choose from the options a, b, or c)"
+      "Answer: [correct option letter and option text, e.g., 'a) Option 1']"
   );
 
   const chatPrompt = ChatPromptTemplate.fromMessages([

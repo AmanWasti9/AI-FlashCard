@@ -337,7 +337,8 @@ export default function GenerateCard() {
       "a) [option 1]\n" +
       "b) [option 2]\n" +
       "c) [option 3]\n" +
-      "Answer: [correct answer here, without option letters] (Choose from the options a, b, or c)"`;
+    "Answer: [correct option letter and option text, e.g., 'b) Option 2']"`;
+
       const response = await model.generateContent(prompt, generationConfig);
 
       const rawText =
